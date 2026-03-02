@@ -14,6 +14,7 @@
     #include <SFML/Window/Event.h>
     #include <math.h>
     #include <stdlib.h>
+    #include "../include/iso_proj.h"
 
     #define MAP_X 10
     #define MAP_Y 10

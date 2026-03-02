@@ -6,12 +6,13 @@
 ##
 
 CC = epiclang
-LDFLAGS = -lcsfml-graphics -lcsfml-window -lcsfml-system -lcsfml-audio
+LDFLAGS = -lcsfml-graphics -lcsfml-window -lcsfml-system -lcsfml-audio -lm
 CFLAGS = -Wall -Wextra -Werror -I.
 
 SRC = src/main.c \
 	src/window.c \
-	src/map.c
+	src/map.c \
+	src/iso_proj.c
 OBJ = $(SRC:.c=.o)
 
 all: my_world
