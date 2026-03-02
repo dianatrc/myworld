@@ -20,6 +20,7 @@ static void game_loop(sfRenderWindow *window)
 int main(void)
 {
     sfRenderWindow *window = create_my_window(1280, 720);
+    map_t map = create_map_t();
 
     while (sfRenderWindow_isOpen(window)) {
         game_loop(window);

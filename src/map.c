@@ -13,7 +13,7 @@ static void free_map_lines(int **map, int lines)
         free(map[i]);
 }
 
-int **create_3d_map(void)
+static int **create_3d_map(void)
 {
     int **map = malloc(sizeof(int *) * MAP_Y);
 
@@ -30,5 +30,29 @@ int **create_3d_map(void)
     for (int i = 0; i < MAP_Y; i++)
         for (int j = 0; j < MAP_X; j++)
             map[i][j] = 0;
+    return map;
+}
+
+map_t *create_map_t(void)
+{
+    map_t *map = malloc(sizeof(map_t));
+
+    if (!map)
+        return NULL;
+    map->map_width = MAP_X;
+    map->map_height = MAP_Y;
+    map->map_3d = create_3d_map();
+    if (!map->map_3d) {
+        free(map);
+        return NULL;
+    }
+    map->map_2d = create_2d_map(map->map_3d);
+    if (!map->map_2d) {
+        for (int i = 0; i < map->map_height; i++)
+            free(map->map_3d[i]);
+        free(map->map_3d);
+        free(map);
+        return NULL;
+    }
     return map;
 }
