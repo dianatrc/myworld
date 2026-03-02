@@ -7,6 +7,7 @@
 
 #ifndef ISO_PROJ_H_
     #define ISO_PROJ_H_
+    #define FACTOR 64
 
 sfVector2f project_iso_point(int x, int y, int z);
 sfVector2f **create_2d_map(int **map_3d);

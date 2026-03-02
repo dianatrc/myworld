@@ -7,7 +7,7 @@
 
 #include "../include/my_world.h"
 
-static void game_loop(sfRenderWindow *window)
+static void game_loop(sfRenderWindow *window, map_t *map)
 {
     sfEvent event;
 
@@ -15,16 +15,18 @@ static void game_loop(sfRenderWindow *window)
         if (event.type == sfEvtClosed)
             sfRenderWindow_close(window);
     }
+    sfRenderWindow_clear(window, sfBlack);
+    draw_2d_map(window, map->map_2d);
+    sfRenderWindow_display(window);
 }
 
 int main(void)
 {
     sfRenderWindow *window = create_my_window(1280, 720);
-    map_t map = create_map_t();
+    map_t *map = create_map_t();
 
     while (sfRenderWindow_isOpen(window)) {
-        game_loop(window);
-        sfRenderWindow_display(window);
+        game_loop(window, map);
     }
     sfRenderWindow_destroy(window);
     return 0;

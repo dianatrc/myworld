@@ -14,11 +14,13 @@
     #include <SFML/Window/Event.h>
     #include <math.h>
     #include <stdlib.h>
+    #include "../include/iso_proj.h"
 
     #include "iso_proj.h"
 
     #define MAP_X 10
     #define MAP_Y 10
+    #define ALTITUDE_CHANGE 10
 
 typedef struct {
     int **map_3d;
@@ -29,5 +31,7 @@ typedef struct {
 
 sfRenderWindow *create_my_window(int width, int height);
 map_t *create_map_t(void);
+void raise(map_t *map, int x, int y);
+void lower(map_t *map, int x, int y);
 
 #endif
