@@ -7,6 +7,25 @@
 
 #include "../include/my_world.h"
 
+static void draw_help_box(sfRenderWindow *window, char *message)
+{
+    sfFont *font = sfFont_createFromFile("include/arial.ttf");
+    sfText *text = sfText_create();
+    sfVector2i mouse = sfMouse_getPositionRenderWindow(window);
+
+    if (!font || !text)
+        return;
+    sfText_setString(text, message);
+    sfText_setFont(text, font);
+    sfText_setCharacterSize(text, 14);
+    sfText_setFillColor(text, sfYellow);
+    sfText_setPosition(text, (sfVector2f){(float)mouse.x + 15,
+            (float)mouse.y + 15});
+    sfRenderWindow_drawText(window, text, NULL);
+    sfText_destroy(text);
+    sfFont_destroy(font);
+}
+
 static void determine_tool(sfVector2i *mouse_pos, map_t *map)
 {
     if (mouse_pos->x < 100) {
@@ -32,6 +51,16 @@ void toolbar_click(sfRenderWindow *window, sfEvent event, map_t *map)
     }
 }
 
+static sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
+    sfVector2i *mouse)
+{
+    if (sfFloatRect_contains(rect, (float)mouse->x, (float)mouse->y))
+        return sfColor_fromRGBA(130, 130, 255, 255);
+    if (map->tool == tool)
+        return sfColor_fromRGBA(100, 100, 250, 255);
+    return sfColor_fromRGBA(80, 80, 80, 255);
+}
+
 static void button_text(sfRenderWindow *window, sfVector2f *pos, char *str)
 {
     sfFont *font = sfFont_createFromFile("include/arial.ttf");
@@ -52,25 +81,35 @@ static void button_text(sfRenderWindow *window, sfVector2f *pos, char *str)
     sfFont_destroy(font);
 }
 
+static void help_message(tool_t tool, sfRenderWindow *window)
+{
+    if (tool == RAISE)
+        draw_help_box(window, "Click to raise ground");
+    if (tool == LOWER)
+        draw_help_box(window, "Click to lower ground");
+    if (tool == LEVEL)
+        draw_help_box(window, "Click to level ground");
+}
+
 static void draw_button(sfRenderWindow *window, tool_t tool, map_t *map,
     char *text)
 {
     sfRectangleShape *rect = sfRectangleShape_create();
     sfVector2f size = {90, 60};
-    sfVector2f pos = {tool * 100 + 5, 10};
+    sfVector2f pos = {(float)(tool * 100 + 5), 10};
+    sfFloatRect box = {pos.x, pos.y, size.x, size.y};
+    sfVector2i mouse = sfMouse_getPositionRenderWindow(window);
 
     sfRectangleShape_setPosition(rect, pos);
     sfRectangleShape_setSize(rect, size);
-    if (map->tool == tool)
-        sfRectangleShape_setFillColor(rect,
-            sfColor_fromRGBA(100, 100, 250, 255));
-    else
-        sfRectangleShape_setFillColor(rect,
-            sfColor_fromRGBA(80, 80, 80, 255));
+    sfRectangleShape_setFillColor(rect, button_color(&box, tool, map, &mouse));
     sfRectangleShape_setOutlineThickness(rect, 2);
     sfRectangleShape_setOutlineColor(rect, sfWhite);
     sfRenderWindow_drawRectangleShape(window, rect, NULL);
     button_text(window, &pos, text);
+    if (sfFloatRect_contains(&box, (float)mouse.x, (float)mouse.y)) {
+        help_message(tool, window);
+    }
     sfRectangleShape_destroy(rect);
 }
 

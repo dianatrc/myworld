@@ -41,7 +41,6 @@ int main(void)
 
     if (!window || !map)
         return 84;
-    map->tool = RAISE;
     while (sfRenderWindow_isOpen(window)) {
         game_loop(window, map);
     }
