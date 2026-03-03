@@ -21,6 +21,7 @@
 
     #define MAP_X 10
     #define MAP_Y 10
+    #define ALTITUDE_CHANGE 10
 
 typedef enum {
     RAISE,
@@ -40,5 +41,10 @@ typedef struct {
 sfRenderWindow *create_my_window(int width, int height);
 map_t *create_map_t(void);
 void free_map_t(map_t *map);
+void raise(map_t *map, int x, int y);
+void lower(map_t *map, int x, int y);
+void modify_point(map_t *map, int x, int y);
+void toolbar_click(sfRenderWindow *window, sfEvent event, map_t *map);
+void draw_toolbar(sfRenderWindow *window, map_t *map);
 
 #endif

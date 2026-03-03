@@ -12,7 +12,9 @@ CFLAGS = -Wall -Wextra -Werror -I.
 SRC = src/main.c \
 	src/window.c \
 	src/map.c \
-	src/iso_proj.c
+	src/iso_proj.c \
+	src/tools.c \
+	src/toolbar.c
 OBJ = $(SRC:.c=.o)
 
 all: my_world
