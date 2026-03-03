@@ -56,3 +56,22 @@ map_t *create_map_t(void)
     }
     return map;
 }
+
+void free_map_t(map_t *map)
+{
+    int i = 0;
+
+    if (map == NULL)
+        return;
+    if (map->map_3d) {
+        for (i = 0; i < MAP_Y; i++)
+            free(map->map_3d[i]);
+        free(map->map_3d);
+    }
+    if (map->map_2d) {
+        for (i = 0; i < MAP_Y; i++)
+            free(map->map_2d[i]);
+        free(map->map_2d);
+    }
+    free(map);
+}
