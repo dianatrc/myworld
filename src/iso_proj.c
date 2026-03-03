@@ -12,11 +12,9 @@ sfVector2f project_iso_point(int x, int y, int z)
     sfVector2f point_2d;
     float angle_x = 45 * (M_PI / 180);
     float angle_y = 35 * (M_PI / 180);
-    int offset_x = 750;
-    int offset_y = 30;
 
-    point_2d.x = cos(angle_x) * x - cos(angle_x) * y + offset_x;
-    point_2d.y = sin(angle_y) * y + sin(angle_y) * x - z + offset_y;
+    point_2d.x = cos(angle_x) * x - cos(angle_x) * y + OFFSET_X;
+    point_2d.y = sin(angle_y) * y + sin(angle_y) * x - z + OFFSET_Y;
     return point_2d;
 }
 

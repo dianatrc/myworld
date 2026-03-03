@@ -14,7 +14,6 @@
     #include <SFML/Window/Event.h>
     #include <math.h>
     #include <stdlib.h>
-    #include "../include/iso_proj.h"
 
     #include "iso_proj.h"
 
@@ -33,5 +32,6 @@ sfRenderWindow *create_my_window(int width, int height);
 map_t *create_map_t(void);
 void raise(map_t *map, int x, int y);
 void lower(map_t *map, int x, int y);
+sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d);
 
 #endif

@@ -7,6 +7,15 @@
 
 #include "../include/my_world.h"
 
+void handle_mouse_click(sfRenderWindow *window, map_t *map)
+{
+    sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
+    sfVector2i tile = get_tile_coordinates(&mouse_pos, map->map_2d);
+
+    if (tile.x != -1 && tile.y != -1) {
+    }
+}
+
 static void game_loop(sfRenderWindow *window, map_t *map)
 {
     sfEvent event;
@@ -14,6 +23,9 @@ static void game_loop(sfRenderWindow *window, map_t *map)
     while (sfRenderWindow_pollEvent(window, &event)) {
         if (event.type == sfEvtClosed)
             sfRenderWindow_close(window);
+        if (event.type == sfEvtMouseButtonPressed) {
+            handle_mouse_click(window, map);
+        }
     }
     sfRenderWindow_clear(window, sfBlack);
     draw_2d_map(window, map->map_2d);
