@@ -7,6 +7,8 @@
 
 #include "../include/my_world.h"
 
+const sfColor BROWN = {139, 69, 19, 255};
+
 sfVector2f project_iso_point(int x, int y, int z)
 {
     sfVector2f point_2d;
@@ -60,11 +62,58 @@ static void draw_lines(sfRenderWindow *window, sfVector2f **map_2d,
     }
 }
 
-int draw_2d_map(sfRenderWindow *window, sfVector2f **map_2d)
+static sfColor get_color(float z)
+{
+    if (z < 0)
+        return sfBlue;
+    if (z < 20)
+        return sfGreen;
+    if (z < 50)
+        return BROWN;
+    return sfWhite;
+}
+
+static void fill_tile(sfVertexArray *array, map_t *map,
+    sfVector2i *pos, sfColor *color)
+{
+    sfVertex v;
+
+    v.color = *color;
+    v.position = map->map_2d[pos->y][pos->x];
+    sfVertexArray_append(array, v);
+    v.position = map->map_2d[pos->y][pos->x + 1];
+    sfVertexArray_append(array, v);
+    v.position = map->map_2d[pos->y + 1][pos->x + 1];
+    sfVertexArray_append(array, v);
+    v.position = map->map_2d[pos->y + 1][pos->x];
+    sfVertexArray_append(array, v);
+}
+
+static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
+{
+    sfVertexArray *array;
+    sfVector2i pos = {x, y};
+    float z;
+    sfColor color;
+
+    if (x + 1 < MAP_X && y + 1 < MAP_Y) {
+        z = (map->map_3d[y][x] + map->map_3d[y][x + 1] +
+            map->map_3d[y + 1][x] + map->map_3d[y + 1][x + 1]) / 4.00f;
+        color = get_color(z);
+        array = sfVertexArray_create();
+        sfVertexArray_setPrimitiveType(array, sfQuads);
+        fill_tile(array, map, &pos, &color);
+        sfRenderWindow_drawVertexArray(window, array, NULL);
+        sfVertexArray_destroy(array);
+    }
+}
+
+int draw_2d_map(sfRenderWindow *window, map_t *map)
 {
     for (int y = 0; y < MAP_Y; y++) {
         for (int x = 0; x < MAP_X; x++) {
-            draw_lines(window, map_2d, x, y);
+            draw_tiles(window, map, x, y);
+            draw_lines(window, map->map_2d, x, y);
         }
     }
     return 0;

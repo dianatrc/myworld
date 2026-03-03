@@ -7,12 +7,45 @@
 
 #include "../include/my_world.h"
 
+void raise_tile(map_t *map, sfVector2i *tile)
+{
+    raise(map, tile->x, tile->y);
+    raise(map, tile->x + 1, tile->y);
+    raise(map, tile->x, tile->y + 1);
+    raise(map, tile->x + 1, tile->y + 1);
+}
+
+void lower_tile(map_t *map, sfVector2i *tile)
+{
+    lower(map, tile->x, tile->y);
+    lower(map, tile->x + 1, tile->y);
+    lower(map, tile->x, tile->y + 1);
+    lower(map, tile->x + 1, tile->y + 1);
+}
+
+void level_tile(map_t *map, sfVector2i *tile)
+{
+    level(map, tile->x, tile->y);
+    level(map, tile->x + 1, tile->y);
+    level(map, tile->x, tile->y + 1);
+    level(map, tile->x + 1, tile->y + 1);
+}
+
 void handle_mouse_click(sfRenderWindow *window, map_t *map)
 {
     sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
-    sfVector2i tile = get_tile_coordinates(&mouse_pos, map->map_2d);
+    sfVector2i tile;
 
+    if (mouse_pos.y < 100)
+        return;
+    tile = get_tile_coordinates(&mouse_pos, map->map_2d);
     if (tile.x != -1 && tile.y != -1) {
+        if (map->tool == RAISE)
+            raise_tile(map, &tile);
+        if (map->tool == LOWER)
+            lower_tile(map, &tile);
+        if (map->tool == LEVEL)
+            level_tile(map, &tile);
     }
 }
 
@@ -41,7 +74,7 @@ static void game_loop(sfRenderWindow *window, map_t *map)
             pressed_key(&event, map);
     }
     sfRenderWindow_clear(window, sfBlack);
-    draw_2d_map(window, map->map_2d);
+    draw_2d_map(window, map);
     draw_toolbar(window, map);
     sfRenderWindow_display(window);
 }

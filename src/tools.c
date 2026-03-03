@@ -29,6 +29,17 @@ void lower(map_t *map, int x, int y)
         y * FACTOR, map->map_3d[y][x]);
 }
 
+void level(map_t *map, int x, int y)
+{
+    if (x < 0 || x >= map->map_width)
+        return;
+    if (y < 0 || y >= map->map_height)
+        return;
+    map->map_3d[y][x] = 0;
+    map->map_2d[y][x] = project_iso_point(x * FACTOR,
+        y * FACTOR, map->map_3d[y][x]);
+}
+
 static float get_distance(sfVector2f *p1, sfVector2f *p2)
 {
     return sqrt(pow(p1->x - p2->x, 2) + pow(p1->y - p2->y, 2));
@@ -66,23 +77,4 @@ sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d)
         }
     }
     return tile;
-}
-
-static void update_point(map_t *map, int x, int y)
-{
-    map->map_2d[y][x] = project_iso_point(x * FACTOR, y * FACTOR,
-        map->map_3d[y][x]);
-}
-
-void modify_point(map_t *map, int x, int y)
-{
-    if (x < 0 || x >= MAP_X || y < 0 || y > MAP_Y)
-        return;
-    if (map->tool == RAISE)
-        map->map_3d[y][x] += 10;
-    if (map->tool == LOWER)
-        map->map_3d[y][x] -= 10;
-    if (map->tool == LEVEL)
-        map->map_3d[y][x] = 0;
-    update_point(map, x, y);
 }

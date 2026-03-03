@@ -13,6 +13,5 @@
 
 sfVector2f project_iso_point(int x, int y, int z);
 sfVector2f **create_2d_map(int **map_3d);
-int draw_2d_map(sfRenderWindow *window, sfVector2f **map_2d);
 
 #endif
