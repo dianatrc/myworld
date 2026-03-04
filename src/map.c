@@ -33,25 +33,36 @@ static int **create_3d_map(void)
     return map;
 }
 
+static void init_map_variables(map_t *map)
+{
+    map->map_width = MAP_X;
+    map->map_height = MAP_Y;
+    map->tool = NONE;
+    map->font = sfFont_createFromFile("include/arial.ttf");
+    map->camera.angle_x = 45 * (M_PI / 180);
+    map->camera.angle_y = 35 * (M_PI / 180);
+    map->camera.offset_x = 640;
+    map->camera.offset_y = 100;
+    map->camera.zoom = 1.0f;
+}
+
 map_t *create_map_t(void)
 {
     map_t *map = malloc(sizeof(map_t));
 
     if (!map)
         return NULL;
-    map->map_width = MAP_X;
-    map->map_height = MAP_Y;
+    init_map_variables(map);
     map->map_3d = create_3d_map();
     if (!map->map_3d) {
+        if (map->font)
+            sfFont_destroy(map->font);
         free(map);
         return NULL;
     }
-    map->map_2d = create_2d_map(map->map_3d);
+    map->map_2d = create_2d_map(map->map_3d, &map->camera);
     if (!map->map_2d) {
-        for (int i = 0; i < map->map_height; i++)
-            free(map->map_3d[i]);
-        free(map->map_3d);
-        free(map);
+        free_map_t(map);
         return NULL;
     }
     return map;
@@ -64,8 +75,7 @@ void free_map_t(map_t *map)
     if (map == NULL)
         return;
     if (map->map_3d) {
-        for (i = 0; i < MAP_Y; i++)
-            free(map->map_3d[i]);
+        free_map_lines(map->map_3d, MAP_Y);
         free(map->map_3d);
     }
     if (map->map_2d) {
@@ -73,5 +83,7 @@ void free_map_t(map_t *map)
             free(map->map_2d[i]);
         free(map->map_2d);
     }
+    if (map->font)
+        sfFont_destroy(map->font);
     free(map);
 }

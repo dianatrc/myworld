@@ -7,9 +7,8 @@
 
 #include "../include/iso_proj.h"
 
-static void draw_help_box(sfRenderWindow *window, char *message)
+static void draw_help_box(sfRenderWindow *window, char *message, sfFont *font)
 {
-    sfFont *font = sfFont_createFromFile("include/arial.ttf");
     sfText *text = sfText_create();
     sfVector2i mouse = sfMouse_getPositionRenderWindow(window);
 
@@ -23,7 +22,6 @@ static void draw_help_box(sfRenderWindow *window, char *message)
             (float)mouse.y + 15});
     sfRenderWindow_drawText(window, text, NULL);
     sfText_destroy(text);
-    sfFont_destroy(font);
 }
 
 void determine_tool(sfVector2i *mouse_pos, map_t *map)
@@ -54,11 +52,10 @@ sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
 
 void button_text(sfRenderWindow *window, sfVector2f *pos, char *str)
 {
-    sfFont *font = sfFont_createFromFile("include/arial.ttf");
     sfText *text = sfText_create();
     sfVector2f text_pos;
 
-    if (!font)
+    if (!font || !text)
         return;
     sfText_setString(text, str);
     sfText_setFont(text, font);
@@ -69,17 +66,16 @@ void button_text(sfRenderWindow *window, sfVector2f *pos, char *str)
     sfText_setPosition(text, text_pos);
     sfRenderWindow_drawText(window, text, NULL);
     sfText_destroy(text);
-    sfFont_destroy(font);
 }
 
-static void help_message(tool_t tool, sfRenderWindow *window)
+static void help_message(tool_t tool, sfRenderWindow *window, sfFont *font)
 {
     if (tool == RAISE)
-        draw_help_box(window, "Click to raise ground");
+        draw_help_box(window, "Click to raise ground", font);
     if (tool == LOWER)
-        draw_help_box(window, "Click to lower ground");
+        draw_help_box(window, "Click to lower ground", font);
     if (tool == LEVEL)
-        draw_help_box(window, "Click to level ground");
+        draw_help_box(window, "Click to level ground", font);
 }
 
 static void draw_button(sfRenderWindow *window, tool_t tool, map_t *map,
@@ -97,9 +93,9 @@ static void draw_button(sfRenderWindow *window, tool_t tool, map_t *map,
     sfRectangleShape_setOutlineThickness(rect, 2);
     sfRectangleShape_setOutlineColor(rect, sfWhite);
     sfRenderWindow_drawRectangleShape(window, rect, NULL);
-    button_text(window, &pos, text);
+    button_text(window, &pos, text, map->font);
     if (sfFloatRect_contains(&box, (float)mouse.x, (float)mouse.y)) {
-        help_message(tool, window);
+        help_message(tool, window, map->font);
     }
     sfRectangleShape_destroy(rect);
 }

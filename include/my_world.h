@@ -34,6 +34,14 @@ typedef enum {
 } state_t;
 
 typedef struct {
+    float angle_x;
+    float angle_y;
+    float offset_x;
+    float offset_y;
+    float zoom;
+} camera_t;
+
+typedef struct {
     int **map_3d;
     sfVector2f **map_2d;
     int map_width;
@@ -41,6 +49,8 @@ typedef struct {
     tool_t tool;
     state_t state;
     sfTexture *menu_pic;
+    sfFont *font;
+    camera_t camera;
 } map_t;
 
 // window.c

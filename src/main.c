@@ -80,6 +80,7 @@ int main(void)
     map->tool = NONE;
     map->state = MENU;
     map->menu_pic = sfTexture_createFromFile("include/world.jpg", NULL);
+
     if (!window || !map)
         return 84;
     while (sfRenderWindow_isOpen(window)) {
