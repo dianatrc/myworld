@@ -40,13 +40,13 @@ typedef struct {
 sfRenderWindow *create_my_window(int width, int height);
 map_t *create_map_t(void);
 void free_map_t(map_t *map);
-void raise(map_t *map, int x, int y);
-void lower(map_t *map, int x, int y);
 sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d);
-void toolbar_click(sfRenderWindow *window, sfEvent event, map_t *map);
 void draw_toolbar(sfRenderWindow *window, map_t *map);
-void level(map_t *map, int x, int y);
 int draw_2d_map(sfRenderWindow *window, map_t *map);
+void raise_tile(map_t *map, sfVector2i *tile);
+void lower_tile(map_t *map, sfVector2i *tile);
+void level_tile(map_t *map, sfVector2i *tile);
+void determine_tool(sfVector2i *mouse_pos, map_t *map);
 
 
 #endif

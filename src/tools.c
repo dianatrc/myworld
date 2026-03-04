@@ -7,7 +7,7 @@
 
 #include "../include/my_world.h"
 
-void raise(map_t *map, int x, int y)
+static void raise(map_t *map, int x, int y)
 {
     if (x < 0 || x >= map->map_width)
         return;
@@ -18,7 +18,15 @@ void raise(map_t *map, int x, int y)
         y * FACTOR, map->map_3d[y][x]);
 }
 
-void lower(map_t *map, int x, int y)
+void raise_tile(map_t *map, sfVector2i *tile)
+{
+    raise(map, tile->x, tile->y);
+    raise(map, tile->x + 1, tile->y);
+    raise(map, tile->x, tile->y + 1);
+    raise(map, tile->x + 1, tile->y + 1);
+}
+
+static void lower(map_t *map, int x, int y)
 {
     if (x < 0 || x >= map->map_width)
         return;
@@ -29,7 +37,15 @@ void lower(map_t *map, int x, int y)
         y * FACTOR, map->map_3d[y][x]);
 }
 
-void level(map_t *map, int x, int y)
+void lower_tile(map_t *map, sfVector2i *tile)
+{
+    lower(map, tile->x, tile->y);
+    lower(map, tile->x + 1, tile->y);
+    lower(map, tile->x, tile->y + 1);
+    lower(map, tile->x + 1, tile->y + 1);
+}
+
+static void level(map_t *map, int x, int y)
 {
     if (x < 0 || x >= map->map_width)
         return;
@@ -38,6 +54,14 @@ void level(map_t *map, int x, int y)
     map->map_3d[y][x] = 0;
     map->map_2d[y][x] = project_iso_point(x * FACTOR,
         y * FACTOR, map->map_3d[y][x]);
+}
+
+void level_tile(map_t *map, sfVector2i *tile)
+{
+    level(map, tile->x, tile->y);
+    level(map, tile->x + 1, tile->y);
+    level(map, tile->x, tile->y + 1);
+    level(map, tile->x + 1, tile->y + 1);
 }
 
 static float get_distance(sfVector2f *p1, sfVector2f *p2)

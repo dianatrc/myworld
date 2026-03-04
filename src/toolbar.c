@@ -26,7 +26,7 @@ static void draw_help_box(sfRenderWindow *window, char *message)
     sfFont_destroy(font);
 }
 
-static void determine_tool(sfVector2i *mouse_pos, map_t *map)
+void determine_tool(sfVector2i *mouse_pos, map_t *map)
 {
     if (mouse_pos->x < 100) {
         map->tool = RAISE;
@@ -39,15 +39,6 @@ static void determine_tool(sfVector2i *mouse_pos, map_t *map)
     if (mouse_pos->x < 300) {
         map->tool = LEVEL;
         return;
-    }
-}
-
-void toolbar_click(sfRenderWindow *window, sfEvent event, map_t *map)
-{
-    sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
-
-    if (event.type == sfEvtMouseButtonPressed && mouse_pos.y < 100) {
-        determine_tool(&mouse_pos, map);
     }
 }
 
