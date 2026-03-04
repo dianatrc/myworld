@@ -51,18 +51,34 @@ static void handle_offsets(sfEvent *event, map_t *map, int *change_made)
     }
 }
 
+static void handle_zoom(sfEvent *event, map_t *map, int *change_made)
+{
+    if (event->type == sfEvtMouseWheelScrolled) {
+        if (event->mouseWheelScroll.delta > 0)
+            map->camera.zoom *= 1.1f;
+        else
+            map->camera.zoom /= 1.1f;
+        *change_made = 1;
+    }
+    if (event->type == sfEvtKeyPressed) {
+        if (event->key.code == sfKeyAdd || event->key.code == sfKeyEqual) {
+            map->camera.zoom *= 1.1f;
+            *change_made = 1;
+        }
+        if (event->key.code == sfKeySubtract
+            || event->key.code == sfKeyHyphen) {
+            map->camera.zoom /= 1.1f;
+            *change_made = 1;
+        }
+    }
+}
+
 int handle_camera(sfEvent *event, map_t *map)
 {
     int change_made = 0;
 
     handle_offsets(event, map, &change_made);
     handle_rotation(event, map, &change_made);
-    if (event->type == sfEvtMouseWheelScrolled) {
-        if (event->mouseWheelScroll.delta > 0)
-            map->camera.zoom *= 1.1f;
-        else
-            map->camera.zoom /= 1.1f;
-        change_made = 1;
-    }
+    handle_zoom(event, map, &change_made);
     return change_made;
 }
