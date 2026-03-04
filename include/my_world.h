@@ -35,6 +35,7 @@ typedef struct {
     int map_width;
     int map_height;
     tool_t tool;
+    sfFont *font;
 } map_t;
 
 sfRenderWindow *create_my_window(int width, int height);

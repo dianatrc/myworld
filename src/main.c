@@ -60,7 +60,6 @@ int main(void)
     sfRenderWindow *window = create_my_window(1280, 720);
     map_t *map = create_map_t();
 
-    map->tool = NONE;
     if (!window || !map)
         return 84;
     while (sfRenderWindow_isOpen(window)) {
