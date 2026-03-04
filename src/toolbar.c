@@ -50,7 +50,8 @@ sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
     return sfColor_fromRGBA(80, 80, 80, 255);
 }
 
-void button_text(sfRenderWindow *window, sfVector2f *pos, char *str)
+void button_text(sfRenderWindow *window, sfVector2f *pos, char *str,
+    sfFont *font)
 {
     sfText *text = sfText_create();
     sfVector2f text_pos;

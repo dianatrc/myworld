@@ -38,6 +38,7 @@ static void init_map_variables(map_t *map)
     map->map_width = MAP_X;
     map->map_height = MAP_Y;
     map->tool = NONE;
+    map->state = MENU;
     map->font = sfFont_createFromFile("include/arial.ttf");
     map->camera.angle_x = 45 * (M_PI / 180);
     map->camera.angle_y = 35 * (M_PI / 180);

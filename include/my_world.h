@@ -67,10 +67,13 @@ sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d);
 void determine_tool(sfVector2i *mouse_pos, map_t *map);
 sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
     sfVector2i *mouse);
-void button_text(sfRenderWindow *window, sfVector2f *pos, char *str);
+void button_text(sfRenderWindow *window, sfVector2f *pos, char *str,
+    sfFont *font);
 void draw_toolbar(sfRenderWindow *window, map_t *map);
 // menu.c
 void draw_menu(sfRenderWindow *window, map_t *map);
 void determine_state(sfRenderWindow *window, sfVector2i *mouse_pos, map_t *map);
+// camera.c
+int handle_camera(sfEvent *event, map_t *map);
 
 #endif

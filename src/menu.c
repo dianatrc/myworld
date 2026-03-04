@@ -7,13 +7,12 @@
 
 #include "../include/iso_proj.h"
 
-static void draw_title(sfRenderWindow *window, sfVector2f *pos)
+static void draw_title(sfRenderWindow *window, sfVector2f *pos, sfFont *font)
 {
     const char *title = "My world";
-    sfFont *font = sfFont_createFromFile("include/arial.ttf");
     sfText *text = sfText_create();
 
-    if (!font || !text)
+    if (!text)
         return;
     sfText_setString(text, title);
     sfText_setFont(text, font);
@@ -22,7 +21,6 @@ static void draw_title(sfRenderWindow *window, sfVector2f *pos)
     sfText_setPosition(text, *pos);
     sfRenderWindow_drawText(window, text, NULL);
     sfText_destroy(text);
-    sfFont_destroy(font);
 }
 
 static void draw_menu_button(sfRenderWindow *window, map_t *map,
@@ -41,7 +39,7 @@ static void draw_menu_button(sfRenderWindow *window, map_t *map,
     color = button_color(&box, NONE, map, &mouse_pos);
     sfRectangleShape_setFillColor(rect, color);
     sfRenderWindow_drawRectangleShape(window, rect, NULL);
-    button_text(window, pos, (char *)title);
+    button_text(window, pos, (char *)title, map->font);
     sfRectangleShape_destroy(rect);
 }
 
@@ -61,7 +59,7 @@ void draw_menu(sfRenderWindow *window, map_t *map)
         sfRenderWindow_drawSprite(window, sprite, NULL);
         sfSprite_destroy(sprite);
     }
-    draw_title(window, &title_pos);
+    draw_title(window, &title_pos, map->font);
     draw_menu_button(window, map, &start_pos, "START");
     draw_menu_button(window, map, &load_pos, "LOAD");
     draw_menu_button(window, map, &exit_pos, "EXIT");

@@ -51,6 +51,8 @@ static void handle_events(sfRenderWindow *window, map_t *map, sfEvent *event)
             handle_mouse_click(window, map);
         }
     }
+    if (handle_camera(event, map))
+        update_2d_map_points(map);
     if (event->type == sfEvtKeyPressed)
         pressed_key(event, map);
 }
@@ -77,12 +79,9 @@ int main(void)
     sfRenderWindow *window = create_my_window(1280, 720);
     map_t *map = create_map_t();
 
-    map->tool = NONE;
-    map->state = MENU;
-    map->menu_pic = sfTexture_createFromFile("include/world.jpg", NULL);
-
     if (!window || !map)
         return 84;
+    map->menu_pic = sfTexture_createFromFile("include/world.jpg", NULL);
     while (sfRenderWindow_isOpen(window)) {
         game_loop(window, map);
     }
