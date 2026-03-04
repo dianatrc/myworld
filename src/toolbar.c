@@ -5,7 +5,7 @@
 ** MY_WORLD project
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
 static void draw_help_box(sfRenderWindow *window, char *message, sfFont *font)
 {

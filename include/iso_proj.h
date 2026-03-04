@@ -6,12 +6,14 @@
 */
 
 #ifndef ISO_PROJ_H_
+    #include "my_world.h"
+
     #define ISO_PROJ_H_
     #define FACTOR 64
-    #define OFFSET_X 750
-    #define OFFSET_Y 30
 
-sfVector2f project_iso_point(int x, int y, int z);
-sfVector2f **create_2d_map(int **map_3d);
+sfVector2f project_iso_point(int x, int y, int z, camera_t *camera);
+sfVector2f **create_2d_map(int **map_3d, camera_t *camera);
+void update_2d_map_points(map_t *map);
+int draw_2d_map(sfRenderWindow *window, map_t *map);
 
 #endif

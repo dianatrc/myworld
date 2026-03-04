@@ -5,7 +5,7 @@
 ** MY_WORLD project
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
 static void free_map_lines(int **map, int lines)
 {
@@ -39,6 +39,11 @@ static void init_map_variables(map_t *map)
     map->map_height = MAP_Y;
     map->tool = NONE;
     map->font = sfFont_createFromFile("include/arial.ttf");
+    map->camera.angle_x = 45 * (M_PI / 180);
+    map->camera.angle_y = 35 * (M_PI / 180);
+    map->camera.offset_x = 640;
+    map->camera.offset_y = 100;
+    map->camera.zoom = 1.0f;
 }
 
 map_t *create_map_t(void)
@@ -55,7 +60,7 @@ map_t *create_map_t(void)
         free(map);
         return NULL;
     }
-    map->map_2d = create_2d_map(map->map_3d);
+    map->map_2d = create_2d_map(map->map_3d, &map->camera);
     if (!map->map_2d) {
         free_map_t(map);
         return NULL;

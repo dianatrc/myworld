@@ -5,22 +5,24 @@
 ** MY_WORLD project
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
 const sfColor BROWN = {139, 69, 19, 255};
 
-sfVector2f project_iso_point(int x, int y, int z)
+sfVector2f project_iso_point(int x, int y, int z, camera_t *camera)
 {
     sfVector2f point_2d;
-    float angle_x = 45 * (M_PI / 180);
-    float angle_y = 35 * (M_PI / 180);
 
-    point_2d.x = cos(angle_x) * x - cos(angle_x) * y + OFFSET_X;
-    point_2d.y = sin(angle_y) * y + sin(angle_y) * x - z + OFFSET_Y;
+    point_2d.x = cos(camera->angle_x) * x - cos(camera->angle_x) * y;
+    point_2d.y = sin(camera->angle_y) * y + sin(camera->angle_y) * x - z;
+    point_2d.x *= camera->zoom;
+    point_2d.y *= camera->zoom;
+    point_2d.x += camera->offset_x;
+    point_2d.y += camera->offset_y;
     return point_2d;
 }
 
-sfVector2f **create_2d_map(int **map_3d)
+sfVector2f **create_2d_map(int **map_3d, camera_t *camera)
 {
     sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * MAP_Y);
 
@@ -28,9 +30,18 @@ sfVector2f **create_2d_map(int **map_3d)
         map_2d[i] = malloc(sizeof(sfVector2f) * MAP_X);
         for (int j = 0; j < MAP_X; j++)
             map_2d[i][j] = project_iso_point(j * FACTOR, i * FACTOR,
-                map_3d[i][j]);
+                map_3d[i][j], camera);
     }
     return map_2d;
+}
+
+void update_2d_map_points(map_t *map)
+{
+    for (int i = 0; i < MAP_Y; i++)
+        for (int j = 0; j < MAP_X; j++) {
+            map->map_2d[i][j] = project_iso_point(j * FACTOR, i * FACTOR,
+                map->map_3d[i][j], &map->camera);
+        }
 }
 
 static sfVertexArray *create_line(sfVector2f *point1, sfVector2f *point2)

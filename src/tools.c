@@ -5,7 +5,7 @@
 ** MY_WORLD project
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
 static void raise(map_t *map, int x, int y)
 {
@@ -15,7 +15,7 @@ static void raise(map_t *map, int x, int y)
         return;
     map->map_3d[y][x] += ALTITUDE_CHANGE;
     map->map_2d[y][x] = project_iso_point(x * FACTOR,
-        y * FACTOR, map->map_3d[y][x]);
+        y * FACTOR, map->map_3d[y][x], &map->camera);
 }
 
 void raise_tile(map_t *map, sfVector2i *tile)
@@ -34,7 +34,7 @@ static void lower(map_t *map, int x, int y)
         return;
     map->map_3d[y][x] -= ALTITUDE_CHANGE;
     map->map_2d[y][x] = project_iso_point(x * FACTOR,
-        y * FACTOR, map->map_3d[y][x]);
+        y * FACTOR, map->map_3d[y][x], &map->camera);
 }
 
 void lower_tile(map_t *map, sfVector2i *tile)
@@ -53,7 +53,7 @@ static void level(map_t *map, int x, int y)
         return;
     map->map_3d[y][x] = 0;
     map->map_2d[y][x] = project_iso_point(x * FACTOR,
-        y * FACTOR, map->map_3d[y][x]);
+        y * FACTOR, map->map_3d[y][x], &map->camera);
 }
 
 void level_tile(map_t *map, sfVector2i *tile)

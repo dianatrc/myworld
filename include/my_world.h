@@ -16,8 +16,6 @@
     #include <math.h>
     #include <stdlib.h>
 
-    #include "iso_proj.h"
-
     #define MAP_X 10
     #define MAP_Y 10
     #define ALTITUDE_CHANGE 10
@@ -30,12 +28,21 @@ typedef enum {
 } tool_t;
 
 typedef struct {
+    float angle_x;
+    float angle_y;
+    float offset_x;
+    float offset_y;
+    float zoom;
+} camera_t;
+
+typedef struct {
     int **map_3d;
     sfVector2f **map_2d;
     int map_width;
     int map_height;
     tool_t tool;
     sfFont *font;
+    camera_t camera;
 } map_t;
 
 sfRenderWindow *create_my_window(int width, int height);
