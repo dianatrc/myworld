@@ -11,7 +11,10 @@
     #define OFFSET_X 750
     #define OFFSET_Y 30
 
+    #include "my_world.h"
+
 sfVector2f project_iso_point(int x, int y, int z);
 sfVector2f **create_2d_map(int **map_3d);
+int draw_2d_map(sfRenderWindow *window, map_t *map);
 
 #endif

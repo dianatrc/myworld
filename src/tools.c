@@ -5,7 +5,7 @@
 ** MY_WORLD project
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
 static void raise(map_t *map, int x, int y)
 {

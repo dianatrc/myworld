@@ -5,7 +5,7 @@
 ** MY_WORLD project
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
 sfRenderWindow *create_my_window(int width, int height)
 {

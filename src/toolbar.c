@@ -5,7 +5,7 @@
 ** MY_WORLD project
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
 static void draw_help_box(sfRenderWindow *window, char *message)
 {
@@ -42,7 +42,7 @@ void determine_tool(sfVector2i *mouse_pos, map_t *map)
     }
 }
 
-static sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
+sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
     sfVector2i *mouse)
 {
     if (sfFloatRect_contains(rect, (float)mouse->x, (float)mouse->y))
@@ -52,7 +52,7 @@ static sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
     return sfColor_fromRGBA(80, 80, 80, 255);
 }
 
-static void button_text(sfRenderWindow *window, sfVector2f *pos, char *str)
+void button_text(sfRenderWindow *window, sfVector2f *pos, char *str)
 {
     sfFont *font = sfFont_createFromFile("include/arial.ttf");
     sfText *text = sfText_create();
