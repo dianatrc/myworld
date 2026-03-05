@@ -45,6 +45,8 @@ static void init_map_variables(map_t *map)
     map->camera.offset_x = 640;
     map->camera.offset_y = 100;
     map->camera.zoom = 1.0f;
+    map->current_tile.x = -1;
+    map->current_tile.y = -1;
 }
 
 map_t *create_map_t(void)

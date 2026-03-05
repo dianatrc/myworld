@@ -38,6 +38,14 @@ void determine_tool(sfVector2i *mouse_pos, map_t *map)
         map->tool = LEVEL;
         return;
     }
+    if (mouse_pos->x < 400) {
+        map->tool = NONE;
+        return;
+    }
+    if (mouse_pos->x < 500) {
+        map->tool = SAVE;
+        return;
+    }
 }
 
 sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
@@ -77,6 +85,10 @@ static void help_message(tool_t tool, sfRenderWindow *window, sfFont *font)
         draw_help_box(window, "Click to lower ground", font);
     if (tool == LEVEL)
         draw_help_box(window, "Click to level ground", font);
+    if (tool == NONE)
+        draw_help_box(window, "Default", font);
+    if (tool == SAVE)
+        draw_help_box(window, "Save progress", font);
 }
 
 static void draw_button(sfRenderWindow *window, tool_t tool, map_t *map,
@@ -104,7 +116,7 @@ static void draw_button(sfRenderWindow *window, tool_t tool, map_t *map,
 void draw_toolbar(sfRenderWindow *window, map_t *map)
 {
     sfRectangleShape *sh = sfRectangleShape_create();
-    sfVector2f size = {300, 80};
+    sfVector2f size = {500, 80};
 
     sfRectangleShape_setSize(sh, size);
     sfRectangleShape_setFillColor(sh, sfColor_fromRGBA(50, 50, 50, 200));
@@ -113,4 +125,6 @@ void draw_toolbar(sfRenderWindow *window, map_t *map)
     draw_button(window, RAISE, map, "RAISE");
     draw_button(window, LOWER, map, "LOWER");
     draw_button(window, LEVEL, map, "LEVEL");
+    draw_button(window, NONE, map, "NONE");
+    draw_button(window, SAVE, map, "SAVE");
 }

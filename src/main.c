@@ -10,20 +10,19 @@
 void handle_mouse_click(sfRenderWindow *window, map_t *map)
 {
     sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
-    sfVector2i tile;
 
     if (mouse_pos.y < 100 && mouse_pos.x < 380) {
         determine_tool(&mouse_pos, map);
         return;
     }
-    tile = get_tile_coordinates(&mouse_pos, map->map_2d);
-    if (tile.x != -1 && tile.y != -1) {
+    map->current_tile = get_tile_coordinates(&mouse_pos, map->map_2d);
+    if (map->current_tile.x != -1 && map->current_tile.y != -1) {
         if (map->tool == RAISE)
-            raise_tile(map, &tile);
+            raise_tile(map, &map->current_tile);
         if (map->tool == LOWER)
-            lower_tile(map, &tile);
+            lower_tile(map, &map->current_tile);
         if (map->tool == LEVEL)
-            level_tile(map, &tile);
+            level_tile(map, &map->current_tile);
     }
 }
 
@@ -53,8 +52,10 @@ static void handle_events(sfRenderWindow *window, map_t *map, sfEvent *event)
     }
     if (handle_camera(event, map))
         update_2d_map_points(map);
-    if (event->type == sfEvtKeyPressed)
+    if (event->type == sfEvtKeyPressed) {
+        handle_tile_navigation(event, map);
         pressed_key(event, map);
+    }
 }
 
 static void game_loop(sfRenderWindow *window, map_t *map)
