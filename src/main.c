@@ -11,7 +11,7 @@ void handle_mouse_click(sfRenderWindow *window, map_t *map)
 {
     sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
 
-    if (mouse_pos.y < 100 && mouse_pos.x < 380) {
+    if (mouse_pos.y < 100 && mouse_pos.x < 500) {
         determine_tool(&mouse_pos, map);
         return;
     }
@@ -67,8 +67,6 @@ static void game_loop(sfRenderWindow *window, map_t *map)
     sfRenderWindow_clear(window, sfBlack);
     if (map->state == MENU) {
         draw_menu(window, map);
-    } else if (map->state == LOAD && load_save(map, "map.legend") == 0) {
-        map->state = GAME;
     } else {
         draw_2d_map(window, map);
         draw_toolbar(window, map);
