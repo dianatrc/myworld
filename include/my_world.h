@@ -24,7 +24,8 @@ typedef enum {
     RAISE,
     LOWER,
     LEVEL,
-    NONE
+    NONE,
+    SAVE
 } tool_t;
 
 typedef enum {
