@@ -98,11 +98,11 @@ void free_map_t(map_t *map)
     if (map == NULL)
         return;
     if (map->map_3d) {
-        free_map_lines(map->map_3d, MAP_Y);
+        free_map_lines(map->map_3d, map->map_height);
         free(map->map_3d);
     }
     if (map->map_2d) {
-        for (i = 0; i < MAP_Y; i++)
+        for (i = 0; i < map->map_height; i++)
             free(map->map_2d[i]);
         free(map->map_2d);
     }
