@@ -81,13 +81,10 @@ int main(void)
 
     if (!window || !map)
         return 84;
-    map->menu_pic = sfTexture_createFromFile("include/world.jpg", NULL);
     while (sfRenderWindow_isOpen(window)) {
         game_loop(window, map);
     }
     free_map_t(map);
-    if (map->menu_pic)
-        sfTexture_destroy(map->menu_pic);
     sfRenderWindow_destroy(window);
     return 0;
 }

@@ -7,8 +7,6 @@
 
 #include "../include/iso_proj.h"
 
-const sfColor BROWN = {139, 69, 19, 255};
-
 sfVector2f project_iso_point(int x, int y, int z, camera_t *camera)
 {
     sfVector2f point_2d;
@@ -73,31 +71,47 @@ static void draw_lines(sfRenderWindow *window, sfVector2f **map_2d,
     }
 }
 
-static sfColor get_color(float z)
+static sfTexture *get_texture(float z, map_t *map)
 {
     if (z < 0)
-        return sfBlue;
+        return map->water_texture;
     if (z < 20)
-        return sfGreen;
+        return map->grass_texture;
     if (z < 50)
-        return BROWN;
-    return sfWhite;
+        return map->dirt_texture;
+    return map->snow_texture;
 }
 
-static void fill_tile(sfVertexArray *array, map_t *map,
-    sfVector2i *pos, sfColor *color)
+static void append_vertex(sfVertexArray *array, sfVector2f *pos,
+    sfVector2f *tex, sfColor *color)
 {
     sfVertex v;
 
+    v.position = *pos;
+    v.texCoords = *tex;
     v.color = *color;
-    v.position = map->map_2d[pos->y][pos->x];
     sfVertexArray_append(array, v);
-    v.position = map->map_2d[pos->y][pos->x + 1];
-    sfVertexArray_append(array, v);
-    v.position = map->map_2d[pos->y + 1][pos->x + 1];
-    sfVertexArray_append(array, v);
-    v.position = map->map_2d[pos->y + 1][pos->x];
-    sfVertexArray_append(array, v);
+}
+
+static void fill_tile(sfVertexArray *array, map_t *map,
+    sfVector2i *pos)
+{
+    sfVector2f top_left = {0, 0};
+    sfVector2f top_right = {32, 0};
+    sfVector2f bottom_left = {0, 32};
+    sfVector2f bottom_right = {32, 32};
+    sfColor color;
+
+    if (pos->x == map->current_tile.x && pos->y == map->current_tile.y)
+        color = sfMagenta;
+    else
+        color = sfWhite;
+    append_vertex(array, &map->map_2d[pos->y][pos->x], &top_left, &color);
+    append_vertex(array, &map->map_2d[pos->y][pos->x + 1], &top_right, &color);
+    append_vertex(array, &map->map_2d[pos->y + 1][pos->x + 1],
+        &bottom_right, &color);
+    append_vertex(array, &map->map_2d[pos->y + 1][pos->x],
+        &bottom_left, &color);
 }
 
 static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
@@ -105,18 +119,19 @@ static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
     sfVertexArray *array;
     sfVector2i pos = {x, y};
     float z;
-    sfColor color;
+    sfRenderStates states = {0};
 
     if (x + 1 < MAP_X && y + 1 < MAP_Y) {
         z = (map->map_3d[y][x] + map->map_3d[y][x + 1] +
             map->map_3d[y + 1][x] + map->map_3d[y + 1][x + 1]) / 4.00f;
-        color = get_color(z);
+        states.blendMode = sfBlendAlpha;
+        states.transform = sfTransform_Identity;
+        states.texture = get_texture(z, map);
+        states.shader = NULL;
         array = sfVertexArray_create();
         sfVertexArray_setPrimitiveType(array, sfQuads);
-        if (x == map->current_tile.x && y == map->current_tile.y)
-            color = sfYellow;
-        fill_tile(array, map, &pos, &color);
-        sfRenderWindow_drawVertexArray(window, array, NULL);
+        fill_tile(array, map, &pos);
+        sfRenderWindow_drawVertexArray(window, array, &states);
         sfVertexArray_destroy(array);
     }
 }

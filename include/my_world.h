@@ -20,6 +20,15 @@
     #define MAP_X 10
     #define MAP_Y 10
     #define ALTITUDE_CHANGE 10
+    #define ANGLE_X 45 * (M_PI / 180)
+    #define ANGLE_Y 35 * (M_PI / 180)
+    #define START_X 640
+    #define START_Y 100
+    #define START_ZOOM 1.0f
+    #define STEP 10.0f
+    #define ROTATION 0.05f
+    #define ZOOM 1.1f
+    #define MAX_DISTANCE 50.00f
 
 typedef enum {
     RAISE,
@@ -54,6 +63,10 @@ typedef struct {
     sfFont *font;
     camera_t camera;
     sfVector2i current_tile;
+    sfTexture *water_texture;
+    sfTexture *grass_texture;
+    sfTexture *dirt_texture;
+    sfTexture *snow_texture;
 } map_t;
 
 // window.c

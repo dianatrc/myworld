@@ -40,13 +40,32 @@ static void init_map_variables(map_t *map)
     map->tool = NONE;
     map->state = MENU;
     map->font = sfFont_createFromFile("include/arial.ttf");
-    map->camera.angle_x = 45 * (M_PI / 180);
-    map->camera.angle_y = 35 * (M_PI / 180);
-    map->camera.offset_x = 640;
-    map->camera.offset_y = 100;
-    map->camera.zoom = 1.0f;
+    map->camera.angle_x = ANGLE_X;
+    map->camera.angle_y = ANGLE_Y;
+    map->camera.offset_x = START_X;
+    map->camera.offset_y = START_Y;
+    map->camera.zoom = START_ZOOM;
     map->current_tile.x = -1;
     map->current_tile.y = -1;
+    map->menu_pic = sfTexture_createFromFile("include/world.jpg", NULL);
+    map->water_texture = sfTexture_createFromFile("include/water.png", NULL);
+    map->grass_texture = sfTexture_createFromFile("include/grass.png", NULL);
+    map->dirt_texture = sfTexture_createFromFile("include/dirt.png", NULL);
+    map->snow_texture = sfTexture_createFromFile("include/snow.png", NULL);
+}
+
+static void destroy_textures(map_t *map)
+{
+    if (map->menu_pic)
+        sfTexture_destroy(map->menu_pic);
+    if (map->water_texture)
+        sfTexture_destroy(map->water_texture);
+    if (map->grass_texture)
+        sfTexture_destroy(map->grass_texture);
+    if (map->dirt_texture)
+        sfTexture_destroy(map->dirt_texture);
+    if (map->snow_texture)
+        sfTexture_destroy(map->snow_texture);
 }
 
 map_t *create_map_t(void)
@@ -88,5 +107,6 @@ void free_map_t(map_t *map)
     }
     if (map->font)
         sfFont_destroy(map->font);
+    destroy_textures(map);
     free(map);
 }
