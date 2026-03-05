@@ -35,7 +35,14 @@ static int **create_3d_map(void)
 
 static void init_sounds(map_t *map)
 {
-    map->click_buffer = sfSoundBuffer_createFromFile("");
+    map->click_buffer = sfSoundBuffer_createFromFile("utils/click_sound.wav");
+    map->click_sound = sfSound_create();
+    if (map->click_buffer && map->click_sound)
+        sfSound_setBuffer(map->click_sound, map->click_buffer);
+    map->save_buffer = sfSoundBuffer_createFromFile("utils/save_sound.wav");
+    map->save_sound = sfSound_create();
+    if (map->save_buffer && map->save_sound)
+        sfSound_setBuffer(map->save_sound, map->save_buffer);
 }
 
 static void init_map_variables(map_t *map)
@@ -57,6 +64,7 @@ static void init_map_variables(map_t *map)
     map->grass_texture = sfTexture_createFromFile("utils/grass.png", NULL);
     map->dirt_texture = sfTexture_createFromFile("utils/dirt.png", NULL);
     map->snow_texture = sfTexture_createFromFile("utils/snow.png", NULL);
+    init_sounds(map);
 }
 
 static void destroy_textures(map_t *map)
@@ -71,6 +79,14 @@ static void destroy_textures(map_t *map)
         sfTexture_destroy(map->dirt_texture);
     if (map->snow_texture)
         sfTexture_destroy(map->snow_texture);
+}
+
+static void destroy_sounds(map_t *map)
+{
+    sfSound_destroy(map->click_sound);
+    sfSoundBuffer_destroy(map->click_buffer);
+    sfSound_destroy(map->save_sound);
+    sfSoundBuffer_destroy(map->save_buffer);
 }
 
 map_t *create_map_t(void)
@@ -113,5 +129,12 @@ void free_map_t(map_t *map)
     if (map->font)
         sfFont_destroy(map->font);
     destroy_textures(map);
+    destroy_sounds(map);
     free(map);
+}
+
+void play_sound(sfSound *sound)
+{
+    if (sound)
+        sfSound_play(sound);
 }

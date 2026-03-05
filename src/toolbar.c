@@ -24,6 +24,14 @@ static void draw_help_box(sfRenderWindow *window, char *message, sfFont *font)
     sfText_destroy(text);
 }
 
+static void save_button_actions(map_t *map)
+{
+    map->tool = SAVE;
+    save_file(map, "map.legend");
+    if (map->save_sound)
+        sfSound_play(map->save_sound);
+}
+
 void determine_tool(sfVector2i *mouse_pos, map_t *map)
 {
     if (mouse_pos->x < 100) {
@@ -43,8 +51,8 @@ void determine_tool(sfVector2i *mouse_pos, map_t *map)
         return;
     }
     if (mouse_pos->x < 500) {
-        map->tool = SAVE;
-        save_file(map, "map.legend");
+        save_button_actions(map);
+        return;
     }
 }
 

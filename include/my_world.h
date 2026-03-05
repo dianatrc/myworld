@@ -13,6 +13,9 @@
     #include <SFML/Window/VideoMode.h>
     #include <SFML/Window/Event.h>
     #include <SFML/Window/Mouse.h>
+    #include <SFML/Audio.h>
+    #include <SFML/Audio/Sound.h>
+    #include <SFML/Audio/SoundBuffer.h>
     #include <math.h>
     #include <stdlib.h>
     #include <stdio.h>
@@ -78,6 +81,7 @@ sfRenderWindow *create_my_window(int width, int height);
 // map.c
 map_t *create_map_t(void);
 void free_map_t(map_t *map);
+void play_sound(sfSound *sound);
 // tool.c
 void raise_tile(map_t *map, sfVector2i *tile);
 void lower_tile(map_t *map, sfVector2i *tile);

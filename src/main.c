@@ -11,6 +11,7 @@ void handle_mouse_click(sfRenderWindow *window, map_t *map)
 {
     sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
 
+    play_sound(map->click_sound);
     if (mouse_pos.y < 100 && mouse_pos.x < 500) {
         determine_tool(&mouse_pos, map);
         return;
@@ -46,6 +47,7 @@ static void handle_events(sfRenderWindow *window, map_t *map, sfEvent *event)
         if (map->state == MENU) {
             mouse_pos = sfMouse_getPositionRenderWindow(window);
             determine_state(window, &mouse_pos, map);
+            play_sound(map->click_sound);
         } else {
             handle_mouse_click(window, map);
         }
