@@ -11,19 +11,19 @@ static void handle_rotation(sfEvent *event, map_t *map, int *change_made)
 {
     if (event->type == sfEvtKeyPressed) {
         if (event->key.code == sfKeyW) {
-            map->camera.angle_y += 0.05f;
+            map->camera.angle_y += ROTATION;
             *change_made = 1;
         }
         if (event->key.code == sfKeyS) {
-            map->camera.angle_y -= 0.05f;
+            map->camera.angle_y -= ROTATION;
             *change_made = 1;
         }
         if (event->key.code == sfKeyA) {
-            map->camera.angle_x -= 0.05f;
+            map->camera.angle_x -= ROTATION;
             *change_made = 1;
         }
         if (event->key.code == sfKeyD) {
-            map->camera.angle_x += 0.05f;
+            map->camera.angle_x += ROTATION;
             *change_made = 1;
         }
     }
@@ -36,13 +36,13 @@ static void handle_offsets(sfEvent *event, map_t *map, int *change_made)
 
     if (event->type == sfEvtKeyPressed && ctrl) {
         if (event->key.code == sfKeyUp)
-            map->camera.offset_y -= 10;
+            map->camera.offset_y -= STEP;
         if (event->key.code == sfKeyDown)
-            map->camera.offset_y += 10;
+            map->camera.offset_y += STEP;
         if (event->key.code == sfKeyLeft)
-            map->camera.offset_x -= 10;
+            map->camera.offset_x -= STEP;
         if (event->key.code == sfKeyRight)
-            map->camera.offset_x += 10;
+            map->camera.offset_x += STEP;
         *change_made = 1;
     }
 }
@@ -51,19 +51,19 @@ static void handle_zoom(sfEvent *event, map_t *map, int *change_made)
 {
     if (event->type == sfEvtMouseWheelScrolled) {
         if (event->mouseWheelScroll.delta > 0)
-            map->camera.zoom *= 1.1f;
+            map->camera.zoom *= ZOOM;
         else
-            map->camera.zoom /= 1.1f;
+            map->camera.zoom /= ZOOM;
         *change_made = 1;
     }
     if (event->type == sfEvtKeyPressed) {
         if (event->key.code == sfKeyAdd || event->key.code == sfKeyEqual) {
-            map->camera.zoom *= 1.1f;
+            map->camera.zoom *= ZOOM;
             *change_made = 1;
         }
         if (event->key.code == sfKeySubtract
             || event->key.code == sfKeyHyphen) {
-            map->camera.zoom /= 1.1f;
+            map->camera.zoom /= ZOOM;
             *change_made = 1;
         }
     }

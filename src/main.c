@@ -11,7 +11,7 @@ void handle_mouse_click(sfRenderWindow *window, map_t *map)
 {
     sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
 
-    if (mouse_pos.y < 100 && mouse_pos.x < 380) {
+    if (mouse_pos.y < 100 && mouse_pos.x < 500) {
         determine_tool(&mouse_pos, map);
         return;
     }

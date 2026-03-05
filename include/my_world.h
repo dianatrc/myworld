@@ -19,6 +19,14 @@
     #define MAP_X 10
     #define MAP_Y 10
     #define ALTITUDE_CHANGE 10
+    #define ANGLE_X 45 * (M_PI / 180)
+    #define ANGLE_Y 35 * (M_PI / 180)
+    #define START_X 640
+    #define START_Y 100
+    #define START_ZOOM 1.0f
+    #define STEP 10.0f
+    #define ROTATION 0.05f
+    #define ZOOM 1.1f
 
 typedef enum {
     RAISE,
