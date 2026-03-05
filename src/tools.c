@@ -79,6 +79,15 @@ static void update_tile(sfVector2i *tile, float dist, float *min_dist,
     }
 }
 
+static sfVector2i check_if_inside_map(float min_dist, sfVector2i *tile)
+{
+    sfVector2i ignore = {-1, -1};
+
+    if (min_dist > MAX_DISTANCE)
+        return ignore;
+    return *tile;
+}
+
 sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d)
 {
     sfVector2f m_pos = {(float)mouse_pos->x, (float)mouse_pos->y};
@@ -100,5 +109,5 @@ sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d)
             update_tile(&tile, dist, &min_dist, &current);
         }
     }
-    return tile;
+    return check_if_inside_map(min_dist, &tile);
 }

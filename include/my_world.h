@@ -28,6 +28,7 @@
     #define STEP 10.0f
     #define ROTATION 0.05f
     #define ZOOM 1.1f
+    #define MAX_DISTANCE 50.00f
 
 typedef enum {
     RAISE,
@@ -62,6 +63,10 @@ typedef struct {
     sfFont *font;
     camera_t camera;
     sfVector2i current_tile;
+    sfTexture *water_texture;
+    sfTexture *grass_texture;
+    sfTexture *dirt_texture;
+    sfTexture *snow_texture;
 } map_t;
 
 // window.c
