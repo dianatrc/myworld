@@ -15,7 +15,8 @@ void handle_mouse_click(sfRenderWindow *window, map_t *map)
         determine_tool(&mouse_pos, map);
         return;
     }
-    map->current_tile = get_tile_coordinates(&mouse_pos, map->map_2d);
+    map->current_tile = get_tile_coordinates(&mouse_pos, map->map_2d,
+        map->map_height, map->map_width);
     if (map->current_tile.x != -1 && map->current_tile.y != -1) {
         if (map->tool == RAISE)
             raise_tile(map, &map->current_tile);
