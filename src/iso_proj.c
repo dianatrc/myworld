@@ -113,6 +113,8 @@ static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
         color = get_color(z);
         array = sfVertexArray_create();
         sfVertexArray_setPrimitiveType(array, sfQuads);
+        if (x == map->current_tile.x && y == map->current_tile.y)
+            color = sfYellow;
         fill_tile(array, map, &pos, &color);
         sfRenderWindow_drawVertexArray(window, array, NULL);
         sfVertexArray_destroy(array);

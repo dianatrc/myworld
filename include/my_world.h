@@ -51,6 +51,7 @@ typedef struct {
     sfTexture *menu_pic;
     sfFont *font;
     camera_t camera;
+    sfVector2i current_tile;
 } map_t;
 
 // window.c
@@ -74,6 +75,7 @@ void draw_toolbar(sfRenderWindow *window, map_t *map);
 void draw_menu(sfRenderWindow *window, map_t *map);
 void determine_state(sfRenderWindow *window, sfVector2i *mouse_pos, map_t *map);
 // camera.c
+void handle_tile_navigation(sfEvent *event, map_t *map);
 int handle_camera(sfEvent *event, map_t *map);
 
 #endif
