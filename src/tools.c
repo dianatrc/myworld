@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** MY_WORLD
 ** File description:
-** MY_WORLD project
+** Map tools and tile detection
 */
 
 #include "../include/iso_proj.h"
