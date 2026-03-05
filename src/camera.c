@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** MY_WORLD
 ** File description:
-** MY_WORLD project
+** Camera control and map navigation
 */
 
 #include "../include/iso_proj.h"

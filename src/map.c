@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** MY_WORLD
 ** File description:
-** MY_WORLD project
+** Map structure management
 */
 
 #include "../include/iso_proj.h"
@@ -44,7 +44,7 @@ static void init_map_variables(map_t *map)
     map->map_height = MAP_Y;
     map->tool = NONE;
     map->state = MENU;
-    map->font = sfFont_createFromFile("include/arial.ttf");
+    map->font = sfFont_createFromFile("utils/arial.ttf");
     map->camera.angle_x = ANGLE_X;
     map->camera.angle_y = ANGLE_Y;
     map->camera.offset_x = START_X;
@@ -52,11 +52,11 @@ static void init_map_variables(map_t *map)
     map->camera.zoom = START_ZOOM;
     map->current_tile.x = -1;
     map->current_tile.y = -1;
-    map->menu_pic = sfTexture_createFromFile("include/world.jpg", NULL);
-    map->water_texture = sfTexture_createFromFile("include/water.png", NULL);
-    map->grass_texture = sfTexture_createFromFile("include/grass.png", NULL);
-    map->dirt_texture = sfTexture_createFromFile("include/dirt.png", NULL);
-    map->snow_texture = sfTexture_createFromFile("include/snow.png", NULL);
+    map->menu_pic = sfTexture_createFromFile("utils/world.jpg", NULL);
+    map->water_texture = sfTexture_createFromFile("utils/water.png", NULL);
+    map->grass_texture = sfTexture_createFromFile("utils/grass.png", NULL);
+    map->dirt_texture = sfTexture_createFromFile("utils/dirt.png", NULL);
+    map->snow_texture = sfTexture_createFromFile("utils/snow.png", NULL);
 }
 
 static void destroy_textures(map_t *map)

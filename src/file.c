@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** MY_WORLD
 ** File description:
-** MY_WORLD project
+** Map save and load management
 */
 
 #include "../include/iso_proj.h"

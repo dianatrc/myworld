@@ -81,9 +81,8 @@ int main(void)
 
     if (!window || !map)
         return 84;
-    while (sfRenderWindow_isOpen(window)) {
+    while (sfRenderWindow_isOpen(window))
         game_loop(window, map);
-    }
     free_map_t(map);
     sfRenderWindow_destroy(window);
     return 0;

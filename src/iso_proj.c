@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** MY_WORLD
 ** File description:
-** MY_WORLD project
+** Isometric projection and map drawing functions
 */
 
 #include "../include/iso_proj.h"

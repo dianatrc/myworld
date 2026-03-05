@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** MY_WORLD
 ** File description:
-** MY_WORLD project
+** Window creation and initialization
 */
 
 #include "../include/iso_proj.h"
