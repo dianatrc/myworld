@@ -74,7 +74,8 @@ void determine_state(sfRenderWindow *window, sfVector2i *mouse_pos, map_t *map)
     }
     if ((mouse_pos->y >= 20 && mouse_pos->y <= 80) &&
         (mouse_pos->x >= 120 && mouse_pos->x <= 210)) {
-        map->state = LOAD;
+        if (load_save(map, "map.legend") == 0)
+            map->state = GAME;
         return;
     }
     if ((mouse_pos->y >= 20 && mouse_pos->y <= 80) &&

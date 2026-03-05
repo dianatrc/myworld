@@ -44,7 +44,7 @@ void determine_tool(sfVector2i *mouse_pos, map_t *map)
     }
     if (mouse_pos->x < 500) {
         map->tool = SAVE;
-        return;
+        save_file(map, "map.legend");
     }
 }
 

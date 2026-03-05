@@ -67,7 +67,6 @@ static void game_loop(sfRenderWindow *window, map_t *map)
     sfRenderWindow_clear(window, sfBlack);
     if (map->state == MENU) {
         draw_menu(window, map);
-    } else if (map->state == LOAD) {
     } else {
         draw_2d_map(window, map);
         draw_toolbar(window, map);

@@ -16,7 +16,8 @@ SRC = src/main.c \
 	src/tools.c \
 	src/toolbar.c \
 	src/menu.c \
-	src/camera.c
+	src/camera.c \
+	src/file.c
 OBJ = $(SRC:.c=.o)
 
 all: my_world

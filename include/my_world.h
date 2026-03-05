@@ -15,6 +15,7 @@
     #include <SFML/Window/Mouse.h>
     #include <math.h>
     #include <stdlib.h>
+    #include <stdio.h>
 
     #define MAP_X 10
     #define MAP_Y 10
@@ -86,5 +87,8 @@ void determine_state(sfRenderWindow *window, sfVector2i *mouse_pos, map_t *map);
 // camera.c
 void handle_tile_navigation(sfEvent *event, map_t *map);
 int handle_camera(sfEvent *event, map_t *map);
+// file.c
+void save_file(map_t *map, const char *filename);
+int load_save(map_t *map, const char *filename);
 
 #endif
