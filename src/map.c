@@ -33,6 +33,11 @@ static int **create_3d_map(void)
     return map;
 }
 
+static void init_sounds(map_t *map)
+{
+    map->click_buffer = sfSoundBuffer_createFromFile("");
+}
+
 static void init_map_variables(map_t *map)
 {
     map->map_width = MAP_X;

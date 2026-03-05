@@ -67,6 +67,10 @@ typedef struct {
     sfTexture *grass_texture;
     sfTexture *dirt_texture;
     sfTexture *snow_texture;
+    sfSoundBuffer *click_buffer;
+    sfSound *click_sound;
+    sfSoundBuffer *save_buffer;
+    sfSound *save_sound;
 } map_t;
 
 // window.c
