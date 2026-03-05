@@ -20,13 +20,14 @@ sfVector2f project_iso_point(int x, int y, int z, camera_t *camera)
     return point_2d;
 }
 
-sfVector2f **create_2d_map(int **map_3d, camera_t *camera)
+sfVector2f **create_2d_map(int **map_3d, camera_t *camera,
+    int height, int width)
 {
-    sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * MAP_Y);
+    sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * height);
 
-    for (int i = 0; i < MAP_Y; i++) {
-        map_2d[i] = malloc(sizeof(sfVector2f) * MAP_X);
-        for (int j = 0; j < MAP_X; j++)
+    for (int i = 0; i < height; i++) {
+        map_2d[i] = malloc(sizeof(sfVector2f) * width);
+        for (int j = 0; j < width; j++)
             map_2d[i][j] = project_iso_point(j * FACTOR, i * FACTOR,
                 map_3d[i][j], camera);
     }
@@ -35,8 +36,8 @@ sfVector2f **create_2d_map(int **map_3d, camera_t *camera)
 
 void update_2d_map_points(map_t *map)
 {
-    for (int i = 0; i < MAP_Y; i++)
-        for (int j = 0; j < MAP_X; j++) {
+    for (int i = 0; i < map->map_height; i++)
+        for (int j = 0; j < map->map_width; j++) {
             map->map_2d[i][j] = project_iso_point(j * FACTOR, i * FACTOR,
                 map->map_3d[i][j], &map->camera);
         }
@@ -54,18 +55,18 @@ static sfVertexArray *create_line(sfVector2f *point1, sfVector2f *point2)
     return (vertex_array);
 }
 
-static void draw_lines(sfRenderWindow *window, sfVector2f **map_2d,
+static void draw_lines(sfRenderWindow *window, map_t *map,
     int x, int y)
 {
     sfVertexArray *line;
 
-    if (x + 1 < MAP_X) {
-        line = create_line(&map_2d[y][x], &map_2d[y][x + 1]);
+    if (x + 1 < map->map_width) {
+        line = create_line(&map->map_2d[y][x], &map->map_2d[y][x + 1]);
         sfRenderWindow_drawVertexArray(window, line, NULL);
         sfVertexArray_destroy(line);
     }
-    if (y + 1 < MAP_Y) {
-        line = create_line(&map_2d[y][x], &map_2d[y + 1][x]);
+    if (y + 1 < map->map_height) {
+        line = create_line(&map->map_2d[y][x], &map->map_2d[y + 1][x]);
         sfRenderWindow_drawVertexArray(window, line, NULL);
         sfVertexArray_destroy(line);
     }
@@ -121,7 +122,7 @@ static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
     float z;
     sfRenderStates states = {0};
 
-    if (x + 1 < MAP_X && y + 1 < MAP_Y) {
+    if (x + 1 < map->map_width && y + 1 < map->map_height) {
         z = (map->map_3d[y][x] + map->map_3d[y][x + 1] +
             map->map_3d[y + 1][x] + map->map_3d[y + 1][x + 1]) / 4.00f;
         states.blendMode = sfBlendAlpha;
@@ -138,10 +139,10 @@ static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
 
 int draw_2d_map(sfRenderWindow *window, map_t *map)
 {
-    for (int y = 0; y < MAP_Y; y++) {
-        for (int x = 0; x < MAP_X; x++) {
+    for (int y = 0; y < map->map_height; y++) {
+        for (int x = 0; x < map->map_width; x++) {
             draw_tiles(window, map, x, y);
-            draw_lines(window, map->map_2d, x, y);
+            draw_lines(window, map, x, y);
         }
     }
     return 0;

@@ -88,7 +88,8 @@ static sfVector2i check_if_inside_map(float min_dist, sfVector2i *tile)
     return *tile;
 }
 
-sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d)
+sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d,
+    int height, int width)
 {
     sfVector2f m_pos = {(float)mouse_pos->x, (float)mouse_pos->y};
     sfVector2i tile = {-1, -1};
@@ -97,8 +98,8 @@ sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d)
     float min_dist = INFINITY;
     float dist;
 
-    for (int i = 0; i < MAP_Y - 1; i++) {
-        for (int j = 0; j < MAP_X - 1; j++) {
+    for (int i = 0; i < height - 1; i++) {
+        for (int j = 0; j < width - 1; j++) {
             center.x = (map_2d[i][j].x + map_2d[i][j + 1].x +
                 map_2d[i + 1][j].x + map_2d[i + 1][j + 1].x) / 4.0f;
             center.y = (map_2d[i][j].y + map_2d[i][j + 1].y +

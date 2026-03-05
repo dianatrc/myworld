@@ -13,22 +13,22 @@ static void free_map_lines(int **map, int lines)
         free(map[i]);
 }
 
-static int **create_3d_map(void)
+static int **create_3d_map(int height, int width)
 {
-    int **map = malloc(sizeof(int *) * MAP_Y);
+    int **map = malloc(sizeof(int *) * height);
 
     if (!map)
         return NULL;
-    for (int i = 0; i < MAP_Y; i++) {
-        map[i] = malloc(sizeof(int) * MAP_X);
+    for (int i = 0; i < height; i++) {
+        map[i] = malloc(sizeof(int) * width);
         if (!map[i]) {
             free_map_lines(map, i);
             free(map);
             return NULL;
         }
     }
-    for (int i = 0; i < MAP_Y; i++)
-        for (int j = 0; j < MAP_X; j++)
+    for (int i = 0; i < height; i++)
+        for (int j = 0; j < width; j++)
             map[i][j] = 0;
     return map;
 }
@@ -96,14 +96,15 @@ map_t *create_map_t(void)
     if (!map)
         return NULL;
     init_map_variables(map);
-    map->map_3d = create_3d_map();
+    map->map_3d = create_3d_map(map->map_height, map->map_width);
     if (!map->map_3d) {
         if (map->font)
             sfFont_destroy(map->font);
         free(map);
         return NULL;
     }
-    map->map_2d = create_2d_map(map->map_3d, &map->camera);
+    map->map_2d = create_2d_map(map->map_3d, &map->camera,
+        map->map_height, map->map_width);
     if (!map->map_2d) {
         free_map_t(map);
         return NULL;
@@ -118,11 +119,11 @@ void free_map_t(map_t *map)
     if (map == NULL)
         return;
     if (map->map_3d) {
-        free_map_lines(map->map_3d, MAP_Y);
+        free_map_lines(map->map_3d, map->map_height);
         free(map->map_3d);
     }
     if (map->map_2d) {
-        for (i = 0; i < MAP_Y; i++)
+        for (i = 0; i < map->map_height; i++)
             free(map->map_2d[i]);
         free(map->map_2d);
     }

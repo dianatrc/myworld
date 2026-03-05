@@ -86,7 +86,8 @@ void play_sound(sfSound *sound);
 void raise_tile(map_t *map, sfVector2i *tile);
 void lower_tile(map_t *map, sfVector2i *tile);
 void level_tile(map_t *map, sfVector2i *tile);
-sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d);
+sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d,
+    int height, int width);
 // toolbar.c
 void determine_tool(sfVector2i *mouse_pos, map_t *map);
 sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
