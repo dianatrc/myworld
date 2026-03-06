@@ -13,40 +13,112 @@
     #include <SFML/Window/VideoMode.h>
     #include <SFML/Window/Event.h>
     #include <SFML/Window/Mouse.h>
+    #include <SFML/Audio.h>
+    #include <SFML/Audio/Sound.h>
+    #include <SFML/Audio/SoundBuffer.h>
     #include <math.h>
     #include <stdlib.h>
-
-    #include "iso_proj.h"
+    #include <stdio.h>
 
     #define MAP_X 10
     #define MAP_Y 10
     #define ALTITUDE_CHANGE 10
+    #define ANGLE_X 45 * (M_PI / 180)
+    #define ANGLE_Y 35 * (M_PI / 180)
+    #define START_X 640
+    #define START_Y 100
+    #define START_ZOOM 1.0f
+    #define STEP 10.0f
+    #define ROTATION 0.05f
+    #define ZOOM 1.1f
+    #define MAX_DISTANCE 50.00f
 
 typedef enum {
     RAISE,
     LOWER,
     LEVEL,
-    NONE
+    NONE,
+    SAVE
 } tool_t;
+
+typedef enum {
+    GAME,
+    LOAD,
+    MENU
+} state_t;
+
+typedef struct {
+    float angle_x;
+    float angle_y;
+    float offset_x;
+    float offset_y;
+    float zoom;
+} camera_t;
+
+typedef enum {
+    WIDTH,
+    HEIGHT,
+    NEITHER
+} input_t;
 
 typedef struct {
     int **map_3d;
     sfVector2f **map_2d;
     int map_width;
     int map_height;
+    int new_width;
+    int new_height;
     tool_t tool;
+    state_t state;
+    sfTexture *menu_pic;
+    sfFont *font;
+    camera_t camera;
+    sfVector2i current_tile;
+    sfTexture *water_texture;
+    sfTexture *grass_texture;
+    sfTexture *dirt_texture;
+    sfTexture *snow_texture;
+    sfSoundBuffer *click_buffer;
+    sfSound *click_sound;
+    sfSoundBuffer *save_buffer;
+    sfSound *save_sound;
+    input_t input;
 } map_t;
 
+// window.c
 sfRenderWindow *create_my_window(int width, int height);
+// map.c
 map_t *create_map_t(void);
+int **create_3d_map(int height, int width);
 void free_map_t(map_t *map);
-void raise(map_t *map, int x, int y);
-void lower(map_t *map, int x, int y);
-sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d);
-void toolbar_click(sfRenderWindow *window, sfEvent event, map_t *map);
+void play_sound(sfSound *sound);
+void regenerate_map(map_t *map);
+// tool.c
+void raise_tile(map_t *map, sfVector2i *tile);
+void lower_tile(map_t *map, sfVector2i *tile);
+void level_tile(map_t *map, sfVector2i *tile);
+sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d,
+    int height, int width);
+// toolbar.c
+void determine_tool(sfVector2i *mouse_pos, map_t *map);
+sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
+    sfVector2i *mouse);
+void button_text(sfRenderWindow *window, sfVector2f *pos, char *str,
+    sfFont *font);
 void draw_toolbar(sfRenderWindow *window, map_t *map);
-void level(map_t *map, int x, int y);
-int draw_2d_map(sfRenderWindow *window, map_t *map);
-
+// toolbar_utils.c
+void help_message_tools(tool_t tool, sfRenderWindow *window, sfFont *font);
+void help_message_sizes(input_t input, sfRenderWindow *window, sfFont *font);
+void draw_textbox(sfRenderWindow *window, map_t *map, sfVector2f *pos,
+    int active);
+// menu.c
+void draw_menu(sfRenderWindow *window, map_t *map);
+void determine_state(sfRenderWindow *window, sfVector2i *mouse_pos, map_t *map);
+// camera.c
+void handle_tile_navigation(sfEvent *event, map_t *map);
+int handle_camera(sfEvent *event, map_t *map);
+// file.c
+void save_file(map_t *map, const char *filename);
+int load_save(map_t *map, const char *filename);
 
 #endif

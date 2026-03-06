@@ -2,31 +2,20 @@
 ** EPITECH PROJECT, 2026
 ** MY_WORLD
 ** File description:
-** MY_WORLD project
+** Toolbar and user interface
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
-static void draw_help_box(sfRenderWindow *window, char *message)
+static void save_button_actions(map_t *map)
 {
-    sfFont *font = sfFont_createFromFile("include/arial.ttf");
-    sfText *text = sfText_create();
-    sfVector2i mouse = sfMouse_getPositionRenderWindow(window);
-
-    if (!font || !text)
-        return;
-    sfText_setString(text, message);
-    sfText_setFont(text, font);
-    sfText_setCharacterSize(text, 14);
-    sfText_setFillColor(text, sfYellow);
-    sfText_setPosition(text, (sfVector2f){(float)mouse.x + 15,
-            (float)mouse.y + 15});
-    sfRenderWindow_drawText(window, text, NULL);
-    sfText_destroy(text);
-    sfFont_destroy(font);
+    map->tool = SAVE;
+    save_file(map, "map.legend");
+    if (map->save_sound)
+        sfSound_play(map->save_sound);
 }
 
-static void determine_tool(sfVector2i *mouse_pos, map_t *map)
+void determine_tool(sfVector2i *mouse_pos, map_t *map)
 {
     if (mouse_pos->x < 100) {
         map->tool = RAISE;
@@ -40,18 +29,17 @@ static void determine_tool(sfVector2i *mouse_pos, map_t *map)
         map->tool = LEVEL;
         return;
     }
-}
-
-void toolbar_click(sfRenderWindow *window, sfEvent event, map_t *map)
-{
-    sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
-
-    if (event.type == sfEvtMouseButtonPressed && mouse_pos.y < 100) {
-        determine_tool(&mouse_pos, map);
+    if (mouse_pos->x < 400) {
+        map->tool = NONE;
+        return;
+    }
+    if (mouse_pos->x < 500) {
+        save_button_actions(map);
+        return;
     }
 }
 
-static sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
+sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
     sfVector2i *mouse)
 {
     if (sfFloatRect_contains(rect, (float)mouse->x, (float)mouse->y))
@@ -61,13 +49,13 @@ static sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
     return sfColor_fromRGBA(80, 80, 80, 255);
 }
 
-static void button_text(sfRenderWindow *window, sfVector2f *pos, char *str)
+void button_text(sfRenderWindow *window, sfVector2f *pos, char *str,
+    sfFont *font)
 {
-    sfFont *font = sfFont_createFromFile("include/arial.ttf");
     sfText *text = sfText_create();
     sfVector2f text_pos;
 
-    if (!font)
+    if (!font || !text)
         return;
     sfText_setString(text, str);
     sfText_setFont(text, font);
@@ -78,17 +66,6 @@ static void button_text(sfRenderWindow *window, sfVector2f *pos, char *str)
     sfText_setPosition(text, text_pos);
     sfRenderWindow_drawText(window, text, NULL);
     sfText_destroy(text);
-    sfFont_destroy(font);
-}
-
-static void help_message(tool_t tool, sfRenderWindow *window)
-{
-    if (tool == RAISE)
-        draw_help_box(window, "Click to raise ground");
-    if (tool == LOWER)
-        draw_help_box(window, "Click to lower ground");
-    if (tool == LEVEL)
-        draw_help_box(window, "Click to level ground");
 }
 
 static void draw_button(sfRenderWindow *window, tool_t tool, map_t *map,
@@ -106,17 +83,18 @@ static void draw_button(sfRenderWindow *window, tool_t tool, map_t *map,
     sfRectangleShape_setOutlineThickness(rect, 2);
     sfRectangleShape_setOutlineColor(rect, sfWhite);
     sfRenderWindow_drawRectangleShape(window, rect, NULL);
-    button_text(window, &pos, text);
-    if (sfFloatRect_contains(&box, (float)mouse.x, (float)mouse.y)) {
-        help_message(tool, window);
-    }
+    button_text(window, &pos, text, map->font);
+    if (sfFloatRect_contains(&box, (float)mouse.x, (float)mouse.y))
+        help_message_tools(tool, window, map->font);
     sfRectangleShape_destroy(rect);
 }
 
 void draw_toolbar(sfRenderWindow *window, map_t *map)
 {
     sfRectangleShape *sh = sfRectangleShape_create();
-    sfVector2f size = {300, 80};
+    sfVector2f size = {650, 80};
+    sfVector2f pos_width = {510, 10};
+    sfVector2f pos_height = {580, 10};
 
     sfRectangleShape_setSize(sh, size);
     sfRectangleShape_setFillColor(sh, sfColor_fromRGBA(50, 50, 50, 200));
@@ -125,4 +103,8 @@ void draw_toolbar(sfRenderWindow *window, map_t *map)
     draw_button(window, RAISE, map, "RAISE");
     draw_button(window, LOWER, map, "LOWER");
     draw_button(window, LEVEL, map, "LEVEL");
+    draw_button(window, NONE, map, "NONE");
+    draw_button(window, SAVE, map, "SAVE");
+    draw_textbox(window, map, &pos_width, 0);
+    draw_textbox(window, map, &pos_height, 1);
 }

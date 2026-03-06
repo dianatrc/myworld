@@ -2,35 +2,45 @@
 ** EPITECH PROJECT, 2026
 ** MY_WORLD
 ** File description:
-** MY_WORLD project
+** Isometric projection and map drawing functions
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
-const sfColor BROWN = {139, 69, 19, 255};
-
-sfVector2f project_iso_point(int x, int y, int z)
+sfVector2f project_iso_point(int x, int y, int z, camera_t *camera)
 {
     sfVector2f point_2d;
-    float angle_x = 45 * (M_PI / 180);
-    float angle_y = 35 * (M_PI / 180);
 
-    point_2d.x = cos(angle_x) * x - cos(angle_x) * y + OFFSET_X;
-    point_2d.y = sin(angle_y) * y + sin(angle_y) * x - z + OFFSET_Y;
+    point_2d.x = cos(camera->angle_x) * x - cos(camera->angle_x) * y;
+    point_2d.y = sin(camera->angle_y) * y + sin(camera->angle_y) * x - z;
+    point_2d.x *= camera->zoom;
+    point_2d.y *= camera->zoom;
+    point_2d.x += camera->offset_x;
+    point_2d.y += camera->offset_y;
     return point_2d;
 }
 
-sfVector2f **create_2d_map(int **map_3d)
+sfVector2f **create_2d_map(int **map_3d, camera_t *camera,
+    int height, int width)
 {
-    sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * MAP_Y);
+    sfVector2f **map_2d = malloc(sizeof(sfVector2f *) * height);
 
-    for (int i = 0; i < MAP_Y; i++) {
-        map_2d[i] = malloc(sizeof(sfVector2f) * MAP_X);
-        for (int j = 0; j < MAP_X; j++)
+    for (int i = 0; i < height; i++) {
+        map_2d[i] = malloc(sizeof(sfVector2f) * width);
+        for (int j = 0; j < width; j++)
             map_2d[i][j] = project_iso_point(j * FACTOR, i * FACTOR,
-                map_3d[i][j]);
+                map_3d[i][j], camera);
     }
     return map_2d;
+}
+
+void update_2d_map_points(map_t *map)
+{
+    for (int i = 0; i < map->map_height + 1; i++)
+        for (int j = 0; j < map->map_width + 1; j++) {
+            map->map_2d[i][j] = project_iso_point(j * FACTOR, i * FACTOR,
+                map->map_3d[i][j], &map->camera);
+        }
 }
 
 static sfVertexArray *create_line(sfVector2f *point1, sfVector2f *point2)
@@ -45,48 +55,64 @@ static sfVertexArray *create_line(sfVector2f *point1, sfVector2f *point2)
     return (vertex_array);
 }
 
-static void draw_lines(sfRenderWindow *window, sfVector2f **map_2d,
+static void draw_lines(sfRenderWindow *window, map_t *map,
     int x, int y)
 {
     sfVertexArray *line;
 
-    if (x + 1 < MAP_X) {
-        line = create_line(&map_2d[y][x], &map_2d[y][x + 1]);
+    if (x + 1 <= map->map_width) {
+        line = create_line(&map->map_2d[y][x], &map->map_2d[y][x + 1]);
         sfRenderWindow_drawVertexArray(window, line, NULL);
         sfVertexArray_destroy(line);
     }
-    if (y + 1 < MAP_Y) {
-        line = create_line(&map_2d[y][x], &map_2d[y + 1][x]);
+    if (y + 1 <= map->map_height) {
+        line = create_line(&map->map_2d[y][x], &map->map_2d[y + 1][x]);
         sfRenderWindow_drawVertexArray(window, line, NULL);
         sfVertexArray_destroy(line);
     }
 }
 
-static sfColor get_color(float z)
+static sfTexture *get_texture(float z, map_t *map)
 {
     if (z < 0)
-        return sfBlue;
+        return map->water_texture;
     if (z < 20)
-        return sfGreen;
+        return map->grass_texture;
     if (z < 50)
-        return BROWN;
-    return sfWhite;
+        return map->dirt_texture;
+    return map->snow_texture;
 }
 
-static void fill_tile(sfVertexArray *array, map_t *map,
-    sfVector2i *pos, sfColor *color)
+static void append_vertex(sfVertexArray *array, sfVector2f *pos,
+    sfVector2f *tex, sfColor *color)
 {
     sfVertex v;
 
+    v.position = *pos;
+    v.texCoords = *tex;
     v.color = *color;
-    v.position = map->map_2d[pos->y][pos->x];
     sfVertexArray_append(array, v);
-    v.position = map->map_2d[pos->y][pos->x + 1];
-    sfVertexArray_append(array, v);
-    v.position = map->map_2d[pos->y + 1][pos->x + 1];
-    sfVertexArray_append(array, v);
-    v.position = map->map_2d[pos->y + 1][pos->x];
-    sfVertexArray_append(array, v);
+}
+
+static void fill_tile(sfVertexArray *array, map_t *map,
+    sfVector2i *pos)
+{
+    sfVector2f top_left = {0, 0};
+    sfVector2f top_right = {32, 0};
+    sfVector2f bottom_left = {0, 32};
+    sfVector2f bottom_right = {32, 32};
+    sfColor color;
+
+    if (pos->x == map->current_tile.x && pos->y == map->current_tile.y)
+        color = sfMagenta;
+    else
+        color = sfWhite;
+    append_vertex(array, &map->map_2d[pos->y][pos->x], &top_left, &color);
+    append_vertex(array, &map->map_2d[pos->y][pos->x + 1], &top_right, &color);
+    append_vertex(array, &map->map_2d[pos->y + 1][pos->x + 1],
+        &bottom_right, &color);
+    append_vertex(array, &map->map_2d[pos->y + 1][pos->x],
+        &bottom_left, &color);
 }
 
 static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
@@ -94,26 +120,29 @@ static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
     sfVertexArray *array;
     sfVector2i pos = {x, y};
     float z;
-    sfColor color;
+    sfRenderStates states = {0};
 
-    if (x + 1 < MAP_X && y + 1 < MAP_Y) {
+    if (x + 1 <= map->map_width && y + 1 <= map->map_height) {
         z = (map->map_3d[y][x] + map->map_3d[y][x + 1] +
             map->map_3d[y + 1][x] + map->map_3d[y + 1][x + 1]) / 4.00f;
-        color = get_color(z);
+        states.blendMode = sfBlendAlpha;
+        states.transform = sfTransform_Identity;
+        states.texture = get_texture(z, map);
+        states.shader = NULL;
         array = sfVertexArray_create();
         sfVertexArray_setPrimitiveType(array, sfQuads);
-        fill_tile(array, map, &pos, &color);
-        sfRenderWindow_drawVertexArray(window, array, NULL);
+        fill_tile(array, map, &pos);
+        sfRenderWindow_drawVertexArray(window, array, &states);
         sfVertexArray_destroy(array);
     }
 }
 
 int draw_2d_map(sfRenderWindow *window, map_t *map)
 {
-    for (int y = 0; y < MAP_Y; y++) {
-        for (int x = 0; x < MAP_X; x++) {
+    for (int y = 0; y <= map->map_height; y++) {
+        for (int x = 0; x <= map->map_width; x++) {
             draw_tiles(window, map, x, y);
-            draw_lines(window, map->map_2d, x, y);
+            draw_lines(window, map, x, y);
         }
     }
     return 0;

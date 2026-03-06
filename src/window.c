@@ -2,10 +2,10 @@
 ** EPITECH PROJECT, 2026
 ** MY_WORLD
 ** File description:
-** MY_WORLD project
+** Window creation and initialization
 */
 
-#include "../include/my_world.h"
+#include "../include/iso_proj.h"
 
 sfRenderWindow *create_my_window(int width, int height)
 {
