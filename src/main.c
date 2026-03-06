@@ -53,31 +53,41 @@ static void pressed_key(sfEvent *event, map_t *map)
         map->tool = LEVEL;
 }
 
+static void remove_digits(map_t *map)
+{
+    if (map->input == WIDTH)
+        map->new_width /= 10;
+    else
+        map->new_height /= 10;
+}
+
 static void calculate_map_sizes(map_t *map, int digit)
 {
     switch (map->input) {
         case WIDTH:
-            map->map_width = (map->map_width * 10 + digit) % 100;
+            map->new_width = (map->new_width * 10 + digit) % 100;
             break;
         case HEIGHT:
-            map->map_height = (map->map_height * 10 + digit) % 100;
+            map->new_height = (map->new_height * 10 + digit) % 100;
             break;
         default:
             return;
     }
 }
 
-static void handle_input(sfEvent *event, map_t *map)
+static void handle_size_input(sfEvent *event, map_t *map)
 {
     int digit;
 
     if (event->type == sfEvtTextEntered && map->input != NEITHER) {
+        if (event->text.unicode == 8)
+            remove_digits(map);
         if (event->text.unicode >= '0' && event->text.unicode <= '9') {
             digit = event->text.unicode - '0';
             calculate_map_sizes(map, digit);
         }
     }
-    if (event->type == sfEvtTextEntered && event->key.code == sfKeyEnter) {
+    if (event->type == sfEvtKeyPressed && event->key.code == sfKeyEnter) {
         regenerate_map(map);
         map->input = NEITHER;
     }
@@ -112,7 +122,7 @@ static void game_loop(sfRenderWindow *window, map_t *map)
 
     while (sfRenderWindow_pollEvent(window, &event)) {
         handle_events(window, map, &event);
-        handle_input(&event, map);
+        handle_size_input(&event, map);
     }
     sfRenderWindow_clear(window, sfBlack);
     if (map->state == MENU) {

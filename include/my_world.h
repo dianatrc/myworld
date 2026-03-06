@@ -66,6 +66,8 @@ typedef struct {
     sfVector2f **map_2d;
     int map_width;
     int map_height;
+    int new_width;
+    int new_height;
     tool_t tool;
     state_t state;
     sfTexture *menu_pic;
@@ -103,6 +105,11 @@ sfColor button_color(sfFloatRect *rect, tool_t tool, map_t *map,
 void button_text(sfRenderWindow *window, sfVector2f *pos, char *str,
     sfFont *font);
 void draw_toolbar(sfRenderWindow *window, map_t *map);
+// toolbar_utils.c
+void help_message_tools(tool_t tool, sfRenderWindow *window, sfFont *font);
+void help_message_sizes(input_t input, sfRenderWindow *window, sfFont *font);
+void draw_textbox(sfRenderWindow *window, map_t *map, sfVector2f *pos,
+    int active);
 // menu.c
 void draw_menu(sfRenderWindow *window, map_t *map);
 void determine_state(sfRenderWindow *window, sfVector2i *mouse_pos, map_t *map);

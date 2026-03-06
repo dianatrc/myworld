@@ -49,6 +49,8 @@ static void init_map_variables(map_t *map)
 {
     map->map_width = MAP_X;
     map->map_height = MAP_Y;
+    map->new_width = MAP_X;
+    map->new_height = MAP_Y;
     map->tool = NONE;
     map->state = MENU;
     map->font = sfFont_createFromFile("utils/arial.ttf");
@@ -142,12 +144,17 @@ void play_sound(sfSound *sound)
 
 void regenerate_map(map_t *map)
 {
+    if (map->new_width < 2 || map->new_height < 2)
+        return;
+    map->current_tile = (sfVector2i){-1, -1};
     for (int i = 0; i < map->map_height; i++) {
         free(map->map_3d[i]);
         free(map->map_2d[i]);
     }
     free(map->map_3d);
     free(map->map_2d);
+    map->map_width = map->new_width;
+    map->map_height = map->new_height;
     map->map_3d = create_3d_map(map->map_height, map->map_width);
     map->map_2d = create_2d_map(map->map_3d, &map->camera,
         map->map_height, map->map_width);

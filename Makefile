@@ -15,6 +15,7 @@ SRC = src/main.c \
 	src/iso_proj.c \
 	src/tools.c \
 	src/toolbar.c \
+	src/toolbar_utils.c \
 	src/menu.c \
 	src/camera.c \
 	src/file.c
