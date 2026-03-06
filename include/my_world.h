@@ -87,6 +87,7 @@ typedef struct {
 sfRenderWindow *create_my_window(int width, int height);
 // map.c
 map_t *create_map_t(void);
+int **create_3d_map(int height, int width);
 void free_map_t(map_t *map);
 void play_sound(sfSound *sound);
 void regenerate_map(map_t *map);

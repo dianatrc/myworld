@@ -13,7 +13,7 @@ static void free_map_lines(int **map, int lines)
         free(map[i]);
 }
 
-static int **create_3d_map(int height, int width)
+int **create_3d_map(int height, int width)
 {
     int **map = malloc(sizeof(int *) * height);
 
@@ -96,7 +96,7 @@ map_t *create_map_t(void)
     if (!map)
         return NULL;
     init_map_variables(map);
-    map->map_3d = create_3d_map(map->map_height, map->map_width);
+    map->map_3d = create_3d_map(map->map_height + 1, map->map_width + 1);
     if (!map->map_3d) {
         if (map->font)
             sfFont_destroy(map->font);
@@ -104,7 +104,7 @@ map_t *create_map_t(void)
         return NULL;
     }
     map->map_2d = create_2d_map(map->map_3d, &map->camera,
-        map->map_height, map->map_width);
+        map->map_height + 1, map->map_width + 1);
     if (!map->map_2d) {
         free_map_t(map);
         return NULL;
@@ -119,11 +119,11 @@ void free_map_t(map_t *map)
     if (map == NULL)
         return;
     if (map->map_3d) {
-        free_map_lines(map->map_3d, map->map_height);
+        free_map_lines(map->map_3d, map->map_height + 1);
         free(map->map_3d);
     }
     if (map->map_2d) {
-        for (i = 0; i < map->map_height; i++)
+        for (i = 0; i < map->map_height + 1; i++)
             free(map->map_2d[i]);
         free(map->map_2d);
     }
@@ -142,13 +142,13 @@ void play_sound(sfSound *sound)
 
 void regenerate_map(map_t *map)
 {
-    for (int i = 0; i < map->map_height; i++) {
+    for (int i = 0; i < map->map_height + 1; i++) {
         free(map->map_3d[i]);
         free(map->map_2d[i]);
     }
     free(map->map_3d);
     free(map->map_2d);
-    map->map_3d = create_3d_map(map->map_height, map->map_width);
+    map->map_3d = create_3d_map(map->map_height + 1, map->map_width + 1);
     map->map_2d = create_2d_map(map->map_3d, &map->camera,
-        map->map_height, map->map_width);
+        map->map_height + 1, map->map_width + 1);
 }

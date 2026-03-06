@@ -9,9 +9,9 @@
 
 static void raise(map_t *map, int x, int y)
 {
-    if (x < 0 || x >= map->map_width)
+    if (x < 0 || x > map->map_width)
         return;
-    if (y < 0 || y >= map->map_height)
+    if (y < 0 || y > map->map_height)
         return;
     map->map_3d[y][x] += ALTITUDE_CHANGE;
     map->map_2d[y][x] = project_iso_point(x * FACTOR,
@@ -28,9 +28,9 @@ void raise_tile(map_t *map, sfVector2i *tile)
 
 static void lower(map_t *map, int x, int y)
 {
-    if (x < 0 || x >= map->map_width)
+    if (x < 0 || x > map->map_width)
         return;
-    if (y < 0 || y >= map->map_height)
+    if (y < 0 || y > map->map_height)
         return;
     map->map_3d[y][x] -= ALTITUDE_CHANGE;
     map->map_2d[y][x] = project_iso_point(x * FACTOR,
@@ -47,9 +47,9 @@ void lower_tile(map_t *map, sfVector2i *tile)
 
 static void level(map_t *map, int x, int y)
 {
-    if (x < 0 || x >= map->map_width)
+    if (x < 0 || x > map->map_width)
         return;
-    if (y < 0 || y >= map->map_height)
+    if (y < 0 || y > map->map_height)
         return;
     map->map_3d[y][x] = 0;
     map->map_2d[y][x] = project_iso_point(x * FACTOR,
@@ -98,8 +98,8 @@ sfVector2i get_tile_coordinates(sfVector2i *mouse_pos, sfVector2f **map_2d,
     float min_dist = INFINITY;
     float dist;
 
-    for (int i = 0; i < height - 1; i++) {
-        for (int j = 0; j < width - 1; j++) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             center.x = (map_2d[i][j].x + map_2d[i][j + 1].x +
                 map_2d[i + 1][j].x + map_2d[i + 1][j + 1].x) / 4.0f;
             center.y = (map_2d[i][j].y + map_2d[i][j + 1].y +
