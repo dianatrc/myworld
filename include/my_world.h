@@ -55,6 +55,12 @@ typedef struct {
     float zoom;
 } camera_t;
 
+typedef enum {
+    WIDTH,
+    HEIGHT,
+    NEITHER
+} input_t;
+
 typedef struct {
     int **map_3d;
     sfVector2f **map_2d;
@@ -74,6 +80,7 @@ typedef struct {
     sfSound *click_sound;
     sfSoundBuffer *save_buffer;
     sfSound *save_sound;
+    input_t input;
 } map_t;
 
 // window.c
@@ -82,6 +89,7 @@ sfRenderWindow *create_my_window(int width, int height);
 map_t *create_map_t(void);
 void free_map_t(map_t *map);
 void play_sound(sfSound *sound);
+void regenerate_map(map_t *map);
 // tool.c
 void raise_tile(map_t *map, sfVector2i *tile);
 void lower_tile(map_t *map, sfVector2i *tile);

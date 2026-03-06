@@ -139,3 +139,16 @@ void play_sound(sfSound *sound)
     if (sound)
         sfSound_play(sound);
 }
+
+void regenerate_map(map_t *map)
+{
+    for (int i = 0; i < map->map_height; i++) {
+        free(map->map_3d[i]);
+        free(map->map_2d[i]);
+    }
+    free(map->map_3d);
+    free(map->map_2d);
+    map->map_3d = create_3d_map(map->map_height, map->map_width);
+    map->map_2d = create_2d_map(map->map_3d, &map->camera,
+        map->map_height, map->map_width);
+}

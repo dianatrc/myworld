@@ -85,7 +85,8 @@ void button_text(sfRenderWindow *window, sfVector2f *pos, char *str,
     sfText_destroy(text);
 }
 
-static void help_message(tool_t tool, sfRenderWindow *window, sfFont *font)
+static void help_message(tool_t tool, sfRenderWindow *window, sfFont *font,
+    input_t input)
 {
     if (tool == RAISE)
         draw_help_box(window, "Click to raise ground", font);
@@ -97,6 +98,10 @@ static void help_message(tool_t tool, sfRenderWindow *window, sfFont *font)
         draw_help_box(window, "Default", font);
     if (tool == SAVE)
         draw_help_box(window, "Save progress", font);
+    if (input == WIDTH)
+        draw_help_box(window, "Choose map width", font);
+    if (input == HEIGHT)
+        draw_help_box(window, "Choose map height", font);
 }
 
 static void draw_button(sfRenderWindow *window, tool_t tool, map_t *map,
@@ -115,16 +120,55 @@ static void draw_button(sfRenderWindow *window, tool_t tool, map_t *map,
     sfRectangleShape_setOutlineColor(rect, sfWhite);
     sfRenderWindow_drawRectangleShape(window, rect, NULL);
     button_text(window, &pos, text, map->font);
-    if (sfFloatRect_contains(&box, (float)mouse.x, (float)mouse.y)) {
-        help_message(tool, window, map->font);
-    }
+    if (sfFloatRect_contains(&box, (float)mouse.x, (float)mouse.y))
+        help_message(tool, window, map->font, map->input);
     sfRectangleShape_destroy(rect);
+}
+
+static void setup_box(sfRectangleShape *box, sfVector2f *pos, int active)
+{
+    sfVector2f size = {60, 60};
+
+    sfRectangleShape_setPosition(box, *pos);
+    sfRectangleShape_setSize(box, size);
+    sfRectangleShape_setOutlineThickness(box, 2);
+    if (active)
+        sfRectangleShape_setOutlineColor(box, sfYellow);
+    else
+        sfRectangleShape_setOutlineColor(box, sfWhite);
+    sfRectangleShape_setFillColor(box, sfColor_fromRGBA(30, 30, 30, 255));
+}
+
+static void draw_textbox(sfRenderWindow *window, map_t *map, sfVector2f *pos,
+    int active)
+{
+    sfRectangleShape *box = sfRectangleShape_create();
+    sfFloatRect rect = {pos->x, pos->y, 60, 60};
+    sfVector2i mouse = sfMouse_getPositionRenderWindow(window);
+    char str[5];
+
+    setup_box(box, pos, (int)map->input == active);
+    sfRenderWindow_drawRectangleShape(window, box, NULL);
+    if (active == 0)
+        snprintf(str, 5, "%d", map->map_width);
+    else
+        snprintf(str, 5, "%d", map->map_height);
+    button_text(window, pos, str, map->font);
+    if (sfFloatRect_contains(&rect, (float)mouse.x, (float)mouse.y)) {
+        if (active == 0)
+            help_message(NONE, window, map->font, WIDTH);
+        else
+            help_message(NONE, window, map->font, HEIGHT);
+    }
+    sfRectangleShape_destroy(box);
 }
 
 void draw_toolbar(sfRenderWindow *window, map_t *map)
 {
     sfRectangleShape *sh = sfRectangleShape_create();
-    sfVector2f size = {500, 80};
+    sfVector2f size = {650, 80};
+    sfVector2f pos_width = {510, 10};
+    sfVector2f pos_height = {580, 10};
 
     sfRectangleShape_setSize(sh, size);
     sfRectangleShape_setFillColor(sh, sfColor_fromRGBA(50, 50, 50, 200));
@@ -135,4 +179,6 @@ void draw_toolbar(sfRenderWindow *window, map_t *map)
     draw_button(window, LEVEL, map, "LEVEL");
     draw_button(window, NONE, map, "NONE");
     draw_button(window, SAVE, map, "SAVE");
+    draw_textbox(window, map, &pos_width, 0);
+    draw_textbox(window, map, &pos_height, 1);
 }

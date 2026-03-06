@@ -7,13 +7,28 @@
 
 #include "../include/iso_proj.h"
 
+static void toolbar_action(sfVector2i *mouse_pos, map_t *map)
+{
+    if (mouse_pos->x < 500) {
+        determine_tool(mouse_pos, map);
+        map->input = NEITHER;
+        return;
+    }
+    if (mouse_pos->x > 500 && mouse_pos->x <= 570)
+        map->input = WIDTH;
+    else if (mouse_pos->x > 570 && mouse_pos->x < 650)
+        map->input = HEIGHT;
+    else
+        map->input = NEITHER;
+}
+
 void handle_mouse_click(sfRenderWindow *window, map_t *map)
 {
     sfVector2i mouse_pos = sfMouse_getPositionRenderWindow(window);
 
     play_sound(map->click_sound);
-    if (mouse_pos.y < 100 && mouse_pos.x < 500) {
-        determine_tool(&mouse_pos, map);
+    if (mouse_pos.y < 100) {
+        toolbar_action(&mouse_pos, map);
         return;
     }
     map->current_tile = get_tile_coordinates(&mouse_pos, map->map_2d,
@@ -36,6 +51,36 @@ static void pressed_key(sfEvent *event, map_t *map)
         map->tool = LOWER;
     if (event->key.code == sfKeyNum3)
         map->tool = LEVEL;
+}
+
+static void calculate_map_sizes(map_t *map, int digit)
+{
+    switch (map->input) {
+        case WIDTH:
+            map->map_width = (map->map_width * 10 + digit) % 100;
+            break;
+        case HEIGHT:
+            map->map_height = (map->map_height * 10 + digit) % 100;
+            break;
+        default:
+            return;
+    }
+}
+
+static void handle_input(sfEvent *event, map_t *map)
+{
+    int digit;
+
+    if (event->type == sfEvtTextEntered && map->input != NEITHER) {
+        if (event->text.unicode >= '0' && event->text.unicode <= '9') {
+            digit = event->text.unicode - '0';
+            calculate_map_sizes(map, digit);
+        }
+    }
+    if (event->type == sfEvtTextEntered && event->key.code == sfKeyEnter) {
+        regenerate_map(map);
+        map->input = NEITHER;
+    }
 }
 
 static void handle_events(sfRenderWindow *window, map_t *map, sfEvent *event)
@@ -65,8 +110,10 @@ static void game_loop(sfRenderWindow *window, map_t *map)
 {
     sfEvent event;
 
-    while (sfRenderWindow_pollEvent(window, &event))
+    while (sfRenderWindow_pollEvent(window, &event)) {
         handle_events(window, map, &event);
+        handle_input(&event, map);
+    }
     sfRenderWindow_clear(window, sfBlack);
     if (map->state == MENU) {
         draw_menu(window, map);
