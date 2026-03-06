@@ -147,7 +147,7 @@ void regenerate_map(map_t *map)
     if (map->new_width < 2 || map->new_height < 2)
         return;
     map->current_tile = (sfVector2i){-1, -1};
-    for (int i = 0; i < map->map_height; i++) {
+    for (int i = 0; i < map->map_height + 1; i++) {
         free(map->map_3d[i]);
         free(map->map_2d[i]);
     }
@@ -155,7 +155,7 @@ void regenerate_map(map_t *map)
     free(map->map_2d);
     map->map_width = map->new_width;
     map->map_height = map->new_height;
-    map->map_3d = create_3d_map(map->map_height, map->map_width);
+    map->map_3d = create_3d_map(map->map_height + 1, map->map_width + 1);
     map->map_2d = create_2d_map(map->map_3d, &map->camera,
         map->map_height + 1, map->map_width + 1);
 }

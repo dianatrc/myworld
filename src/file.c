@@ -22,28 +22,26 @@ void save_file(map_t *map, const char *filename)
     fclose(file);
 }
 
-static void reallocate_map(map_t *map, int old_height)
+static void apply_new_sizes(map_t *map, int width, int height)
 {
-    for (int i = 0; i < old_height; i++) {
-        free(map->map_3d[i]);
-        free(map->map_2d[i]);
-    }
-    free(map->map_2d);
-    free(map->map_3d);
-    map->map_3d = create_3d_map(map->map_height + 1, map->map_width + 1);
-    map->map_2d = create_2d_map(map->map_3d, &map->camera,
-        map->map_height + 1, map->map_width + 1);
+    map->new_width = width;
+    map->new_height = height;
+    regenerate_map(map);
 }
 
 int load_save(map_t *map, const char *filename)
 {
     FILE *file = fopen(filename, "r");
-    int old_height = map->map_height + 1;
+    int load_width;
+    int load_height;
 
     if (!file)
         return -1;
-    fscanf(file, "%d %d", &map->map_width, &map->map_height);
-    reallocate_map(map, old_height);
+    if (fscanf(file, "%d %d", &load_width, &load_height) != 2) {
+        fclose(file);
+        return -1;
+    }
+    apply_new_sizes(map, load_width, load_height);
     for (int i = 0; i < map->map_height; i++)
         for (int j = 0; j < map->map_width; j++)
             fscanf(file, "%d", &map->map_3d[i][j]);
