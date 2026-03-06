@@ -78,12 +78,12 @@ void handle_tile_navigation(sfEvent *event, map_t *map)
         if (event->key.code == sfKeyUp && map->current_tile.y > 0)
             map->current_tile.y--;
         if (event->key.code == sfKeyDown &&
-            map->current_tile.y < map->map_height - 2)
+            map->current_tile.y < map->map_height - 1)
             map->current_tile.y++;
         if (event->key.code == sfKeyLeft && map->current_tile.x > 0)
             map->current_tile.x--;
         if (event->key.code == sfKeyRight &&
-            map->current_tile.x < map->map_width - 2)
+            map->current_tile.x < map->map_width - 1)
             map->current_tile.x++;
     }
 }

@@ -36,8 +36,8 @@ sfVector2f **create_2d_map(int **map_3d, camera_t *camera,
 
 void update_2d_map_points(map_t *map)
 {
-    for (int i = 0; i < map->map_height; i++)
-        for (int j = 0; j < map->map_width; j++) {
+    for (int i = 0; i < map->map_height + 1; i++)
+        for (int j = 0; j < map->map_width + 1; j++) {
             map->map_2d[i][j] = project_iso_point(j * FACTOR, i * FACTOR,
                 map->map_3d[i][j], &map->camera);
         }
@@ -60,12 +60,12 @@ static void draw_lines(sfRenderWindow *window, map_t *map,
 {
     sfVertexArray *line;
 
-    if (x + 1 < map->map_width) {
+    if (x + 1 <= map->map_width) {
         line = create_line(&map->map_2d[y][x], &map->map_2d[y][x + 1]);
         sfRenderWindow_drawVertexArray(window, line, NULL);
         sfVertexArray_destroy(line);
     }
-    if (y + 1 < map->map_height) {
+    if (y + 1 <= map->map_height) {
         line = create_line(&map->map_2d[y][x], &map->map_2d[y + 1][x]);
         sfRenderWindow_drawVertexArray(window, line, NULL);
         sfVertexArray_destroy(line);
@@ -122,7 +122,7 @@ static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
     float z;
     sfRenderStates states = {0};
 
-    if (x + 1 < map->map_width && y + 1 < map->map_height) {
+    if (x + 1 <= map->map_width && y + 1 <= map->map_height) {
         z = (map->map_3d[y][x] + map->map_3d[y][x + 1] +
             map->map_3d[y + 1][x] + map->map_3d[y + 1][x + 1]) / 4.00f;
         states.blendMode = sfBlendAlpha;
@@ -139,8 +139,8 @@ static void draw_tiles(sfRenderWindow *window, map_t *map, int x, int y)
 
 int draw_2d_map(sfRenderWindow *window, map_t *map)
 {
-    for (int y = 0; y < map->map_height; y++) {
-        for (int x = 0; x < map->map_width; x++) {
+    for (int y = 0; y <= map->map_height; y++) {
+        for (int x = 0; x <= map->map_width; x++) {
             draw_tiles(window, map, x, y);
             draw_lines(window, map, x, y);
         }
