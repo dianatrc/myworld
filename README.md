@@ -20,7 +20,7 @@ The application delivers a complete interactive experience featuring:
 - **Audio and UI Feedback:** Sound effects for clicks and saves, tooltips on hover, and visual button states.
 - **Error Handling:** Compliant with standard conventions, handling file I/O errors and resource allocation failures safely.
 
-## Projects Structure
+## Project Structure
 - `include/`
     - `iso_proj.h`        # Isometric projection and drawing prototypes
     - `my_world.h`        # Main header file for structures, enums, and functions
